@@ -88,7 +88,9 @@ export default function Financial() {
                         color: chartColors.fg,
                         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)"
                       }}
-                      formatter={(value: number) => formatINR(value)} 
+                      itemStyle={{ color: chartColors.fg }}
+                      labelStyle={{ color: chartColors.fg }}
+                      formatter={(value: number) => [formatINR(value), undefined]} 
                     />
                   </PieChart>
                 </ResponsiveContainer>

@@ -238,8 +238,8 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
           </line>
           {/* Load power label */}
-          <rect x={loadX + 10} y={junctionY - 35} width={68} height={18} rx="4" fill="#10b981" fillOpacity="0.2" stroke="#10b981" strokeWidth="1" />
-          <text x={loadX + 44} y={junctionY - 22} textAnchor="middle" fill="#10b981" fontSize="9" fontWeight="bold">
+          <rect x={junctionX + 30} y={junctionY - 60} width={70} height={18} rx="4" fill="#10b981" fillOpacity="0.2" stroke="#10b981" strokeWidth="1" />
+          <text x={junctionX + 65} y={junctionY - 47} textAnchor="middle" fill="#10b981" fontSize="9" fontWeight="bold">
             {loadConsumption} kW
           </text>
 

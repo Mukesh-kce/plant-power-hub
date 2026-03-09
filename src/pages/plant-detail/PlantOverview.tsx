@@ -19,16 +19,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
         </p>
       </div>
 
-      <Suspense fallback={
-        <Card className="w-full h-[600px] bg-card border-border flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            <p className="text-sm text-muted-foreground">Loading 3D visualization...</p>
-          </div>
-        </Card>
-      }>
-        <PlantArchitecture3D plant={plant} />
-      </Suspense>
+      <PlantArchitecture3D plant={plant} />
 
       <KPICards />
       <PerformanceChart />

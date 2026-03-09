@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useChartColors, useTooltipStyle } from "@/hooks/use-chart-colors";
 
 const weeklyData = [
   { day: "Mon", gen: 16200 },
@@ -12,6 +13,8 @@ const weeklyData = [
 ];
 
 export function GenerationSummary() {
+  const cc = useChartColors();
+  const tooltipProps = useTooltipStyle();
   const totalWeek = weeklyData.reduce((s, d) => s + d.gen, 0);
 
   return (
@@ -30,19 +33,13 @@ export function GenerationSummary() {
         <div className="h-[120px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyData} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
-              <XAxis dataKey="day" tick={{ fontSize: 10, fill: "hsl(215, 15%, 55%)" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "hsl(215, 15%, 55%)" }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 10, fill: cc.text }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: cc.text }} axisLine={false} tickLine={false} />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(220, 25%, 10%)",
-                  border: "1px solid hsl(220, 15%, 18%)",
-                  borderRadius: "8px",
-                  fontSize: "11px",
-                  color: "hsl(210, 40%, 93%)",
-                }}
+                {...tooltipProps}
                 formatter={(value: number) => [`${(value / 1000).toFixed(1)} MWh`, "Generation"]}
               />
-              <Bar dataKey="gen" fill="hsl(var(--primary))" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="gen" fill={cc.primary} radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

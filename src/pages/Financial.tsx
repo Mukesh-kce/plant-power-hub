@@ -1,23 +1,18 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { financialData, formatINR } from "@/data/mock-data";
+import { useChartColors, useTooltipStyle } from "@/hooks/use-chart-colors";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell,
 } from "recharts";
 
-const chartColors = {
-  bg: "hsl(220, 25%, 10%)",
-  border: "hsl(220, 15%, 18%)",
-  text: "hsl(215, 15%, 55%)",
-  fg: "hsl(210, 40%, 93%)",
-  primary: "hsl(210, 100%, 56%)",
-  success: "hsl(142, 50%, 45%)",
-};
-
 const PIE_COLORS = ["hsl(0, 62%, 50%)", "hsl(38, 92%, 50%)", "hsl(210, 100%, 56%)", "hsl(270, 60%, 55%)"];
 
 export default function Financial() {
+  const cc = useChartColors();
+  const tooltipProps = useTooltipStyle();
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -47,20 +42,20 @@ export default function Financial() {
                 <AreaChart data={financialData.cumulativeRevenue}>
                   <defs>
                     <linearGradient id="expRevGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={chartColors.primary} stopOpacity={0.2} />
-                      <stop offset="95%" stopColor={chartColors.primary} stopOpacity={0} />
+                      <stop offset="5%" stopColor={cc.primary} stopOpacity={0.2} />
+                      <stop offset="95%" stopColor={cc.primary} stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="actRevGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={chartColors.success} stopOpacity={0.2} />
-                      <stop offset="95%" stopColor={chartColors.success} stopOpacity={0} />
+                      <stop offset="5%" stopColor={cc.success} stopOpacity={0.2} />
+                      <stop offset="95%" stopColor={cc.success} stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                  <YAxis tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                  <Tooltip contentStyle={{ backgroundColor: chartColors.bg, border: `1px solid ${chartColors.border}`, borderRadius: "8px", fontSize: "12px", color: chartColors.fg }} />
-                  <Area type="monotone" dataKey="expected" stroke={chartColors.primary} fill="url(#expRevGrad)" strokeWidth={2} name="Expected (₹L)" />
-                  <Area type="monotone" dataKey="actual" stroke={chartColors.success} fill="url(#actRevGrad)" strokeWidth={2} name="Actual (₹L)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={cc.border} />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                  <YAxis tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                  <Tooltip {...tooltipProps} />
+                  <Area type="monotone" dataKey="expected" stroke={cc.primary} fill="url(#expRevGrad)" strokeWidth={2} name="Expected (₹L)" />
+                  <Area type="monotone" dataKey="actual" stroke={cc.success} fill="url(#actRevGrad)" strokeWidth={2} name="Actual (₹L)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -79,18 +74,9 @@ export default function Financial() {
                         <Cell key={i} fill={PIE_COLORS[i]} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: chartColors.bg, 
-                        border: `1px solid ${chartColors.border}`, 
-                        borderRadius: "8px", 
-                        fontSize: "12px", 
-                        color: chartColors.fg,
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)"
-                      }}
-                      itemStyle={{ color: chartColors.fg }}
-                      labelStyle={{ color: chartColors.fg }}
-                      formatter={(value: number) => [formatINR(value), undefined]} 
+                    <Tooltip
+                      {...tooltipProps}
+                      formatter={(value: number) => [formatINR(value), undefined]}
                     />
                   </PieChart>
                 </ResponsiveContainer>

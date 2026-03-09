@@ -3,21 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { energyData } from "@/data/mock-data";
 import { Lightbulb } from "lucide-react";
+import { useChartColors, useTooltipStyle } from "@/hooks/use-chart-colors";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, ReferenceLine,
 } from "recharts";
 
-const cc = {
-  bg: "hsl(220, 25%, 10%)", border: "hsl(220, 15%, 18%)", text: "hsl(215, 15%, 55%)",
-  fg: "hsl(210, 40%, 93%)", primary: "hsl(210, 100%, 56%)", warning: "hsl(38, 92%, 50%)",
-  destructive: "hsl(0, 62%, 50%)",
-};
-
 const riskColors = { low: "text-success", medium: "text-warning", high: "text-destructive" };
 
 export default function Energy() {
-  // sample every 4th point for cleaner chart
+  const cc = useChartColors();
+  const tooltipProps = useTooltipStyle();
   const loadSample = energyData.loadProfile.filter((_, i) => i % 2 === 0);
 
   return (
@@ -60,7 +56,7 @@ export default function Energy() {
                   <XAxis dataKey="time" tick={{ fontSize: 10, fill: cc.text }} stroke={cc.border} interval={3} />
                   <YAxis tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
                   <ReferenceLine y={energyData.contractDemand} stroke={cc.destructive} strokeDasharray="5 5" label={{ value: "Contract", position: "right", fill: cc.destructive, fontSize: 10 }} />
-                  <Tooltip contentStyle={{ backgroundColor: cc.bg, border: `1px solid ${cc.border}`, borderRadius: "8px", fontSize: "12px", color: cc.fg }} />
+                  <Tooltip {...tooltipProps} />
                   <Area type="monotone" dataKey="demand" stroke={cc.primary} fill="url(#loadGrad)" strokeWidth={1.5} name="Demand (kVA)" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -79,7 +75,7 @@ export default function Energy() {
                     <XAxis dataKey="time" tick={{ fontSize: 10, fill: cc.text }} stroke={cc.border} interval={3} />
                     <YAxis domain={[0.85, 1]} tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
                     <ReferenceLine y={0.9} stroke={cc.warning} strokeDasharray="5 5" label={{ value: "Min PF", position: "right", fill: cc.warning, fontSize: 10 }} />
-                    <Tooltip contentStyle={{ backgroundColor: cc.bg, border: `1px solid ${cc.border}`, borderRadius: "8px", fontSize: "12px", color: cc.fg }} />
+                    <Tooltip {...tooltipProps} />
                     <Line type="monotone" dataKey="pf" stroke={cc.warning} strokeWidth={2} dot={false} name="Power Factor" />
                   </LineChart>
                 </ResponsiveContainer>

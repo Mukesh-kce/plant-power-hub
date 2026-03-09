@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import Alerts from "./pages/Alerts";
 import Plants from "./pages/Plants";
 import SettingsPage from "./pages/SettingsPage";
+import PlantDetail from "./pages/PlantDetail";
 
 const queryClient = new QueryClient();
 

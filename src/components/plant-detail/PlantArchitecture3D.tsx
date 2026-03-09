@@ -84,60 +84,171 @@ const GRID_LABEL: Record<GridConnection, { text: string; color: string }> = {
 const COLUMN_SPACING = 180;
 const ROW_SPACING = 120;
 
-// ─── SVG Icon renderers (tiny inline icons per type) ─────────────────────────
+// ─── Large Visual Icons Per Equipment Type ───────────────────────────────────
 
-function renderNodeIcon(type: EquipmentType, cx: number, cy: number, color: string) {
-  switch (type) {
+function renderEquipmentVisual(node: LayoutNode) {
+  const style = EQUIPMENT_STYLES[node.type];
+  const x = node.x;
+  const y = node.y;
+  const w = style.width;
+  const h = style.height;
+  const statusColor = STATUS_COLORS[node.status];
+  const primaryColor = style.primaryColor;
+  const secondaryColor = style.secondaryColor;
+
+  switch (node.type) {
     case "solar-array":
       return (
         <g>
-          <rect x={cx - 10} y={cy - 6} width={20} height={12} rx="1" fill="none" stroke={color} strokeWidth="1.2" />
-          <line x1={cx - 3} y1={cy - 6} x2={cx - 3} y2={cy + 6} stroke={color} strokeWidth="0.6" opacity="0.6" />
-          <line x1={cx + 3} y1={cy - 6} x2={cx + 3} y2={cy + 6} stroke={color} strokeWidth="0.6" opacity="0.6" />
-          <line x1={cx - 10} y1={cy} x2={cx + 10} y2={cy} stroke={color} strokeWidth="0.6" opacity="0.6" />
+          {/* Main panel array */}
+          <rect x={x} y={y} width={w} height={h} rx="8" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* Panel grid pattern */}
+          {Array.from({ length: 3 }).map((_, row) =>
+            Array.from({ length: 4 }).map((_, col) => (
+              <rect
+                key={`${row}-${col}`}
+                x={x + 20 + col * 25} y={y + 15 + row * 20}
+                width={20} height={15} rx="2"
+                fill={primaryColor} fillOpacity="0.15" 
+                stroke={primaryColor} strokeWidth="1"
+              />
+            ))
+          )}
+          {/* Solar icon */}
+          <circle cx={x + w - 20} cy={y + 20} r="8" fill={primaryColor} fillOpacity="0.2" />
+          <circle cx={x + w - 20} cy={y + 20} r="3" fill={primaryColor} />
+          {/* Rays */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const angle = (i * Math.PI) / 4;
+            const x1 = x + w - 20 + Math.cos(angle) * 12;
+            const y1 = y + 20 + Math.sin(angle) * 12;
+            const x2 = x + w - 20 + Math.cos(angle) * 16;
+            const y2 = y + 20 + Math.sin(angle) * 16;
+            return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={primaryColor} strokeWidth="1.5" />;
+          })}
         </g>
       );
+
     case "combiner":
-      return <rect x={cx - 6} y={cy - 6} width={12} height={12} rx="2" fill="none" stroke={color} strokeWidth="1.2" />;
+      return (
+        <g>
+          <rect x={x} y={y} width={w} height={h} rx="6" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* Junction terminals */}
+          <circle cx={x + 15} cy={y + h/2} r="4" fill={primaryColor} />
+          <circle cx={x + w - 15} cy={y + h/2} r="4" fill={primaryColor} />
+          {/* Connection lines */}
+          <line x1={x + 19} y1={y + h/2} x2={x + w - 19} y2={y + h/2} stroke={primaryColor} strokeWidth="2" />
+          <line x1={x + w/2} y1={y + 15} x2={x + w/2} y2={y + h - 15} stroke={primaryColor} strokeWidth="1.5" />
+        </g>
+      );
+
     case "inverter":
       return (
         <g>
-          <rect x={cx - 8} y={cy - 7} width={16} height={14} rx="2" fill="none" stroke={color} strokeWidth="1.2" />
-          <text x={cx} y={cy + 3} textAnchor="middle" fill={color} fontSize="7" fontWeight="bold">~</text>
+          <rect x={x} y={y} width={w} height={h} rx="8" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* DC input symbol */}
+          <line x1={x + 20} y1={y + h/2 - 8} x2={x + 20} y2={y + h/2 + 8} stroke={primaryColor} strokeWidth="3" />
+          <line x1={x + 25} y1={y + h/2 - 5} x2={x + 25} y2={y + h/2 + 5} stroke={primaryColor} strokeWidth="2" />
+          {/* AC output symbol */}
+          <path d={`M ${x + w - 35} ${y + h/2 - 5} Q ${x + w - 25} ${y + h/2 - 10} ${x + w - 15} ${y + h/2 - 5} Q ${x + w - 5} ${y + h/2} ${x + w - 15} ${y + h/2 + 5} Q ${x + w - 25} ${y + h/2 + 10} ${x + w - 35} ${y + h/2 + 5}`} 
+            fill="none" stroke={primaryColor} strokeWidth="2.5" />
+          {/* Arrow */}
+          <path d={`M ${x + w/2 - 10} ${y + h/2} L ${x + w/2 + 10} ${y + h/2} M ${x + w/2 + 5} ${y + h/2 - 4} L ${x + w/2 + 10} ${y + h/2} L ${x + w/2 + 5} ${y + h/2 + 4}`} 
+            stroke={primaryColor} strokeWidth="2" fill="none" />
         </g>
       );
+
     case "junction":
-      return <circle cx={cx} cy={cy} r="6" fill="none" stroke={color} strokeWidth="1.5" />;
+      return (
+        <g>
+          <circle cx={x + w/2} cy={y + h/2} r={w/2} 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="3" />
+          {/* Hub connections */}
+          {Array.from({ length: 6 }).map((_, i) => {
+            const angle = (i * Math.PI) / 3;
+            const x1 = x + w/2 + Math.cos(angle) * (w/2 - 15);
+            const y1 = y + h/2 + Math.sin(angle) * (w/2 - 15);
+            const x2 = x + w/2 + Math.cos(angle) * (w/2 - 8);
+            const y2 = y + h/2 + Math.sin(angle) * (w/2 - 8);
+            return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={primaryColor} strokeWidth="2" />;
+          })}
+          <circle cx={x + w/2} cy={y + h/2} r="8" fill={primaryColor} fillOpacity="0.3" />
+        </g>
+      );
+
     case "battery":
       return (
         <g>
-          <rect x={cx - 8} y={cy - 5} width={16} height={10} rx="2" fill="none" stroke={color} strokeWidth="1.2" />
-          <rect x={cx + 8} y={cy - 2} width={3} height={4} rx="1" fill={color} opacity="0.6" />
-          <line x1={cx - 4} y1={cy} x2={cx + 4} y2={cy} stroke={color} strokeWidth="1" />
+          <rect x={x} y={y} width={w} height={h} rx="8" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* Battery cells */}
+          {Array.from({ length: 4 }).map((_, i) => (
+            <rect key={i} 
+              x={x + 15 + i * 18} y={y + 20} width={14} height={h - 40} rx="2"
+              fill={primaryColor} fillOpacity="0.2" stroke={primaryColor} strokeWidth="1" />
+          ))}
+          {/* Positive terminal */}
+          <rect x={x + w - 10} y={y + h/2 - 6} width={8} height={12} rx="2" fill={primaryColor} />
+          <line x1={x + w - 6} y1={y + h/2 - 3} x2={x + w - 6} y2={y + h/2 + 3} stroke="hsl(220, 25%, 8%)" strokeWidth="1.5" />
+          <line x1={x + w - 9} y1={y + h/2} x2={x + w - 3} y2={y + h/2} stroke="hsl(220, 25%, 8%)" strokeWidth="1.5" />
         </g>
       );
+
     case "transformer":
       return (
         <g>
-          <circle cx={cx - 4} cy={cy} r="5" fill="none" stroke={color} strokeWidth="1" />
-          <circle cx={cx + 4} cy={cy} r="5" fill="none" stroke={color} strokeWidth="1" />
+          <rect x={x} y={y} width={w} height={h} rx="6" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* Coil circles */}
+          <circle cx={x + w/2 - 15} cy={y + h/2} r="12" fill="none" stroke={primaryColor} strokeWidth="2.5" />
+          <circle cx={x + w/2 + 15} cy={y + h/2} r="12" fill="none" stroke={primaryColor} strokeWidth="2.5" />
+          {/* Core */}
+          <rect x={x + w/2 - 3} y={y + h/2 - 15} width={6} height={30} rx="2" fill={primaryColor} fillOpacity="0.3" />
         </g>
       );
+
     case "grid":
       return (
         <g>
-          <line x1={cx} y1={cy - 8} x2={cx} y2={cy + 8} stroke={color} strokeWidth="1.5" />
-          <line x1={cx - 8} y1={cy - 3} x2={cx + 8} y2={cy - 3} stroke={color} strokeWidth="1.2" />
-          <line x1={cx - 6} y1={cy + 3} x2={cx + 6} y2={cy + 3} stroke={color} strokeWidth="1.2" />
+          <rect x={x} y={y} width={w} height={h} rx="6" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* Power lines tower */}
+          <line x1={x + w/2} y1={y + 15} x2={x + w/2} y2={y + h - 15} stroke={primaryColor} strokeWidth="3" />
+          <line x1={x + 20} y1={y + 25} x2={x + w - 20} y2={y + 25} stroke={primaryColor} strokeWidth="2" />
+          <line x1={x + 25} y1={y + 35} x2={x + w - 25} y2={y + 35} stroke={primaryColor} strokeWidth="2" />
+          <line x1={x + 30} y1={y + 45} x2={x + w - 30} y2={y + 45} stroke={primaryColor} strokeWidth="2" />
+          {/* Support cables */}
+          <line x1={x + 20} y1={y + 25} x2={x + 30} y2={y + h - 15} stroke={primaryColor} strokeWidth="1" />
+          <line x1={x + w - 20} y1={y + 25} x2={x + w - 30} y2={y + h - 15} stroke={primaryColor} strokeWidth="1" />
         </g>
       );
+
     case "load":
       return (
         <g>
-          <rect x={cx - 8} y={cy - 6} width={16} height={12} rx="2" fill="none" stroke={color} strokeWidth="1.2" />
-          <line x1={cx - 8} y1={cy - 1} x2={cx + 8} y2={cy - 1} stroke={color} strokeWidth="0.6" />
-          <line x1={cx - 8} y1={cy + 3} x2={cx + 8} y2={cy + 3} stroke={color} strokeWidth="0.6" />
+          <rect x={x} y={y} width={w} height={h} rx="6" 
+            fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
+          {/* Building structure */}
+          <rect x={x + 15} y={y + 15} width={w - 30} height={h - 30} rx="3" 
+            fill="none" stroke={primaryColor} strokeWidth="1.5" />
+          {/* Windows */}
+          {Array.from({ length: 2 }).map((_, row) =>
+            Array.from({ length: 3 }).map((_, col) => (
+              <rect key={`${row}-${col}`}
+                x={x + 25 + col * 18} y={y + 25 + row * 15} width={12} height={8} rx="1"
+                fill={primaryColor} fillOpacity="0.2" stroke={primaryColor} strokeWidth="0.8" />
+            ))
+          )}
         </g>
+      );
+
+    default:
+      return (
+        <rect x={x} y={y} width={w} height={h} rx="6" 
+          fill="hsl(220, 25%, 8%)" stroke={primaryColor} strokeWidth="2" />
       );
   }
 }

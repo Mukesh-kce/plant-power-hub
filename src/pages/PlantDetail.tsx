@@ -4,6 +4,8 @@ import { PlantDetailSidebar } from "@/components/layout/PlantDetailSidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { plants } from "@/data/mock-data";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import PlantOverview from "./plant-detail/PlantOverview";
 import PlantPanels from "./plant-detail/PlantPanels";
 import PlantStrings from "./plant-detail/PlantStrings";

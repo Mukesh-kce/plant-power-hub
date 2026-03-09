@@ -1,9 +1,11 @@
-import { useParams, Navigate, Routes, Route } from "react-router-dom";
+import { useParams, Navigate, Routes, Route, useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { PlantDetailSidebar } from "@/components/layout/PlantDetailSidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { plants } from "@/data/mock-data";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import PlantOverview from "./plant-detail/PlantOverview";
 import PlantPanels from "./plant-detail/PlantPanels";
 import PlantStrings from "./plant-detail/PlantStrings";
@@ -13,6 +15,7 @@ import PlantFaults from "./plant-detail/PlantFaults";
 
 export default function PlantDetail() {
   const { plantId } = useParams();
+  const navigate = useNavigate();
   const plant = plants.find(p => p.id === plantId);
   const [selectedDateFilter, setSelectedDateFilter] = useState("Today");
 
@@ -32,6 +35,15 @@ export default function PlantDetail() {
             onDateFilterChange={setSelectedDateFilter}
           />
           <main className="flex-1 overflow-auto p-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/plants")}
+              className="mb-4 -mt-2"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Plants
+            </Button>
             <Routes>
               <Route index element={<PlantOverview plant={plant} />} />
               <Route path="panels" element={<PlantPanels plant={plant} />} />

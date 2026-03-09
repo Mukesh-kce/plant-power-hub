@@ -51,7 +51,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   ];
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog open={open} onOpenChange={onOpenChange} className="top-[60px]">
       <CommandInput placeholder="Search for pages, plants, or features..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>

@@ -3,6 +3,7 @@ import { KPICards } from "@/components/dashboard/KPICards";
 import { PerformanceChart } from "@/components/dashboard/PerformanceChart";
 import { InverterGrid } from "@/components/dashboard/InverterGrid";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
+import { PlantArchitecture3D } from "@/components/plant-detail/PlantArchitecture3D";
 
 interface PlantOverviewProps {
   plant: Plant;

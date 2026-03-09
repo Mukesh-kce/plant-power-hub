@@ -33,8 +33,20 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
   const invStartX = 420;
   const invYs = inverters.slice(0, 4).map((_, i) => 70 + i * 72);
 
+  // Power distribution
+  const junctionX = 540;
+  const junctionY = 180;
+  
+  const loadX = 580;
+  const loadY = 80;
+  
   const gridX = 640;
-  const gridY = 180;
+  const gridY = 260;
+
+  // Calculate power distribution
+  const totalGeneration = inverters.slice(0, 4).reduce((sum, inv) => sum + inv.output, 0);
+  const loadConsumption = 680; // kW consumed by facility
+  const gridExport = Math.max(0, totalGeneration - loadConsumption);
 
   return (
     <Card className="w-full bg-card border-border overflow-hidden">
@@ -54,9 +66,9 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
 
       <div className="overflow-x-auto">
         <svg
-          viewBox="0 0 750 370"
+          viewBox="0 0 800 420"
           className="w-full"
-          style={{ minWidth: 600, maxHeight: 420, background: "transparent" }}
+          style={{ minWidth: 600, maxHeight: 480, background: "transparent" }}
         >
           <defs>
             {/* Animated electricity flow */}
@@ -65,6 +77,12 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             </marker>
             <marker id="arrowGray" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
               <path d="M0,0 L0,6 L6,3 z" fill="#374151" />
+            </marker>
+            <marker id="arrowGreen" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#10b981" />
+            </marker>
+            <marker id="arrowPurple" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#9333ea" />
             </marker>
             <filter id="glow">
               <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -77,7 +95,8 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             { x: panelStartX + (panelsPerRow * (panelW + panelGapX)) / 2 - 20, y: 28, label: "SOLAR PANELS" },
             { x: combinerX + 22, y: 28, label: "COMBINER" },
             { x: invStartX + 30, y: 28, label: "INVERTERS" },
-            { x: gridX + 22, y: 28, label: "GRID" },
+            { x: loadX + 44, y: 28, label: "FACILITY LOAD" },
+            { x: gridX + 44, y: 28, label: "UTILITY GRID" },
           ].map(({ x, y, label }) => (
             <text key={label} x={x} y={y} textAnchor="middle" fill="#6b7280" fontSize="9" fontWeight="600" letterSpacing="1">
               {label}
@@ -183,14 +202,14 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             );
           })}
 
-          {/* Wires from inverters to grid */}
+          {/* Wires from inverters to junction */}
           {invYs.map((iy, i) => {
             const inv = inverters[i];
             const color = inv?.status === "online" ? "#00D4FF" : "#374151";
             const active = inv?.status === "online";
             return (
-              <line key={`wire-inv-grid-${i}`}
-                x1={invStartX + 80} y1={iy + 26} x2={gridX - 5} y2={gridY + 30}
+              <line key={`wire-inv-junction-${i}`}
+                x1={invStartX + 80} y1={iy + 26} x2={junctionX - 8} y2={junctionY}
                 stroke={color} strokeWidth="1.5" strokeDasharray="6,4" opacity="0.7"
                 markerEnd={active ? "url(#arrowBlue)" : "url(#arrowGray)"}>
                 {active && (
@@ -200,7 +219,62 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             );
           })}
 
-          {/* ── GRID CONNECTION ── */}
+          {/* ── POWER JUNCTION ── */}
+          <g>
+            <circle cx={junctionX} cy={junctionY} r="8" fill="#1d2535" stroke="#00D4FF" strokeWidth="2" filter="url(#glow)" />
+            <text x={junctionX} y={junctionY - 18} textAnchor="middle" fill="#00D4FF" fontSize="9" fontWeight="bold">
+              {totalGeneration} kW
+            </text>
+            <text x={junctionX} y={junctionY - 28} textAnchor="middle" fill="#9ca3af" fontSize="7">
+              TOTAL GEN
+            </text>
+          </g>
+
+          {/* Wire from junction to facility load */}
+          <line 
+            x1={junctionX} y1={junctionY} x2={loadX + 44} y2={loadY + 70}
+            stroke="#10b981" strokeWidth="2" strokeDasharray="6,4" opacity="0.8"
+            markerEnd="url(#arrowGreen)">
+            <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
+          </line>
+          {/* Load power label */}
+          <rect x={loadX + 10} y={junctionY - 35} width={68} height={18} rx="4" fill="#10b981" fillOpacity="0.2" stroke="#10b981" strokeWidth="1" />
+          <text x={loadX + 44} y={junctionY - 22} textAnchor="middle" fill="#10b981" fontSize="9" fontWeight="bold">
+            {loadConsumption} kW
+          </text>
+
+          {/* Wire from junction to grid */}
+          <line 
+            x1={junctionX} y1={junctionY} x2={gridX} y2={gridY + 30}
+            stroke="#9333ea" strokeWidth="2" strokeDasharray="6,4" opacity="0.8"
+            markerEnd="url(#arrowPurple)">
+            <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite" />
+          </line>
+          {/* Grid export label */}
+          <rect x={gridX - 40} y={junctionY + 45} width={68} height={18} rx="4" fill="#9333ea" fillOpacity="0.2" stroke="#9333ea" strokeWidth="1" />
+          <text x={gridX - 6} y={junctionY + 58} textAnchor="middle" fill="#a855f7" fontSize="9" fontWeight="bold">
+            {gridExport} kW
+          </text>
+
+          {/* ── FACILITY LOAD ── */}
+          <g>
+            <rect x={loadX} y={loadY} width={88} height={70} rx="8"
+              fill="#1d2535" stroke="#10b981" strokeWidth="2" filter="url(#glow)" />
+            {/* Building icon */}
+            <rect x={loadX + 20} y={loadY + 15} width={48} height={40} rx="3" fill="none" stroke="#10b981" strokeWidth="1.5" />
+            <line x1={loadX + 20} y1={loadY + 30} x2={loadX + 68} y2={loadY + 30} stroke="#10b981" strokeWidth="1" />
+            <line x1={loadX + 20} y1={loadY + 42} x2={loadX + 68} y2={loadY + 42} stroke="#10b981" strokeWidth="1" />
+            <line x1={loadX + 35} y1={loadY + 15} x2={loadX + 35} y2={loadY + 55} stroke="#10b981" strokeWidth="1" />
+            <line x1={loadX + 53} y1={loadY + 15} x2={loadX + 53} y2={loadY + 55} stroke="#10b981" strokeWidth="1" />
+            <text x={loadX + 44} y={loadY + 84} textAnchor="middle" fill="#10b981" fontSize="10" fontWeight="bold">
+              FACILITY
+            </text>
+            <text x={loadX + 44} y={loadY + 96} textAnchor="middle" fill="#9ca3af" fontSize="9">
+              {loadConsumption} kW Load
+            </text>
+          </g>
+
+          {/* ── UTILITY GRID ── */}
           <g>
             <rect x={gridX} y={gridY} width={88} height={60} rx="8"
               fill="#1d2535" stroke="#9333ea" strokeWidth="2" filter="url(#glow)" />
@@ -214,17 +288,37 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
               UTILITY GRID
             </text>
             <text x={gridX + 44} y={gridY + 86} textAnchor="middle" fill="#9ca3af" fontSize="9">
-              Export Active
+              {gridExport} kW Export
+            </text>
+          </g>
+
+          {/* ── POWER DISTRIBUTION SUMMARY ── */}
+          <g>
+            <rect x={30} y={360} width={740} height={38} rx="6" fill="#1d2535" fillOpacity="0.5" stroke="#374151" strokeWidth="1" />
+            <text x={50} y={378} fill="#9ca3af" fontSize="10" fontWeight="600">
+              POWER DISTRIBUTION:
+            </text>
+            <text x={200} y={378} fill="#00D4FF" fontSize="10" fontWeight="bold">
+              Total Gen: {totalGeneration} kW
+            </text>
+            <text x={360} y={378} fill="#10b981" fontSize="10" fontWeight="bold">
+              To Load: {loadConsumption} kW ({((loadConsumption/totalGeneration)*100).toFixed(0)}%)
+            </text>
+            <text x={560} y={378} fill="#a855f7" fontSize="10" fontWeight="bold">
+              To Grid: {gridExport} kW ({((gridExport/totalGeneration)*100).toFixed(0)}%)
+            </text>
+            <text x={50} y={390} fill="#6b7280" fontSize="8">
+              Green = Facility consumption • Purple = Grid export
             </text>
           </g>
 
           {/* ── FAULT LEGEND ── */}
           {alerts.slice(0, 3).map((alert, i) => (
             <g key={alert.id}>
-              <rect x={30} y={310 + i * 18} width={8} height={8} rx="2"
+              <rect x={560} y={345 - i * 12} width={6} height={6} rx="1"
                 fill={alert.severity === "high" ? "#ef4444" : alert.severity === "medium" ? "#f59e0b" : "#3b82f6"} />
-              <text x={45} y={320 + i * 18} fill="#9ca3af" fontSize="9">
-                {alert.message} — SLA: {alert.slaRemaining}min
+              <text x={572} y={350 - i * 12} fill="#9ca3af" fontSize="7">
+                {alert.message.substring(0, 40)} — {alert.slaRemaining}min
               </text>
             </g>
           ))}

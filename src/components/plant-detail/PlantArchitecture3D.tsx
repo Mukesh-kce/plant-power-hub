@@ -256,10 +256,13 @@ function renderEquipmentVisual(node: LayoutNode) {
 // ─── Edge renderer ───────────────────────────────────────────────────────────
 
 function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
-  const fromX = edge.from.x + NODE_W / 2;
-  const fromY = edge.from.y + NODE_H / 2;
-  const toX = edge.to.x + NODE_W / 2;
-  const toY = edge.to.y + NODE_H / 2;
+  const fromStyle = EQUIPMENT_STYLES[edge.from.type];
+  const toStyle = EQUIPMENT_STYLES[edge.to.type];
+  
+  const fromX = edge.from.x + fromStyle.width / 2;
+  const fromY = edge.from.y + fromStyle.height / 2;
+  const toX = edge.to.x + toStyle.width / 2;
+  const toY = edge.to.y + toStyle.height / 2;
 
   // Clip to node edges
   const dx = toX - fromX;
@@ -269,13 +272,13 @@ function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
 
   const ux = dx / dist;
   const uy = dy / dist;
-  const sx = fromX + ux * (NODE_W / 2 + 4);
-  const sy = fromY + uy * (NODE_H / 2 + 4);
-  const ex = toX - ux * (NODE_W / 2 + 4);
-  const ey = toY - uy * (NODE_H / 2 + 4);
+  const sx = fromX + ux * (Math.max(fromStyle.width, fromStyle.height) / 2 + 8);
+  const sy = fromY + uy * (Math.max(fromStyle.width, fromStyle.height) / 2 + 8);
+  const ex = toX - ux * (Math.max(toStyle.width, toStyle.height) / 2 + 8);
+  const ey = toY - uy * (Math.max(toStyle.width, toStyle.height) / 2 + 8);
 
   const isActive = edge.from.status !== "offline" && edge.to.status !== "offline" && (edge.powerKW ?? 0) > 0;
-  const color = isActive ? TYPE_COLORS[edge.to.type] : "hsl(220, 15%, 25%)";
+  const color = isActive ? toStyle.primaryColor : "hsl(220, 15%, 25%)";
 
   const midX = (sx + ex) / 2;
   const midY = (sy + ey) / 2;
@@ -285,38 +288,38 @@ function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
   return (
     <g>
       <defs>
-        <marker id={markerId} markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L6,3 z" fill={color} />
+        <marker id={markerId} markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L0,8 L8,4 z" fill={color} />
         </marker>
       </defs>
       <line
         x1={sx} y1={sy} x2={ex} y2={ey}
-        stroke={color} strokeWidth="1.5" strokeDasharray="6,4"
-        opacity={isActive ? 0.8 : 0.3}
+        stroke={color} strokeWidth={isActive ? 3 : 1.5} strokeDasharray="8,6"
+        opacity={isActive ? 0.9 : 0.3}
         markerEnd={`url(#${markerId})`}
       >
         {isActive && (
-          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite" />
+          <animate attributeName="stroke-dashoffset" values="0;-28" dur="1.5s" repeatCount="indefinite" />
         )}
       </line>
       {edge.bidirectional && (
         <line
           x1={ex} y1={ey} x2={sx} y2={sy}
-          stroke={color} strokeWidth="1" strokeDasharray="4,6"
-          opacity={0.3}
+          stroke={color} strokeWidth="2" strokeDasharray="6,8"
+          opacity="0.4"
         />
       )}
       {edge.powerKW !== undefined && edge.powerKW > 0 && (
         <g>
-          <rect x={midX - 22} y={midY - 8} width={44} height={14} rx="3"
-            fill="hsl(220, 25%, 10%)" fillOpacity="0.9" stroke={color} strokeWidth="0.5" />
-          <text x={midX} y={midY + 2} textAnchor="middle" fill={color} fontSize="8" fontWeight="600">
+          <rect x={midX - 30} y={midY - 10} width={60} height={18} rx="4"
+            fill="hsl(220, 25%, 10%)" fillOpacity="0.95" stroke={color} strokeWidth="1" />
+          <text x={midX} y={midY + 3} textAnchor="middle" fill={color} fontSize="10" fontWeight="bold">
             {edge.powerKW} kW
           </text>
         </g>
       )}
       {edge.label && (
-        <text x={midX} y={midY + 16} textAnchor="middle" fill="hsl(215, 15%, 55%)" fontSize="7">
+        <text x={midX} y={midY + 20} textAnchor="middle" fill="hsl(215, 15%, 55%)" fontSize="8" fontWeight="500">
           {edge.label}
         </text>
       )}
@@ -327,45 +330,54 @@ function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
 // ─── Node renderer ───────────────────────────────────────────────────────────
 
 function NodeBox({ node }: { node: LayoutNode }) {
+  const style = EQUIPMENT_STYLES[node.type];
   const statusColor = STATUS_COLORS[node.status];
-  const typeColor = TYPE_COLORS[node.type];
   const isFault = node.status === "offline";
 
   return (
     <g>
-      {/* Card background */}
+      {/* Equipment visual */}
+      {renderEquipmentVisual(node)}
+      
+      {/* Status indicator */}
       <rect
-        x={node.x} y={node.y} width={NODE_W} height={NODE_H} rx="6"
-        fill="hsl(220, 25%, 10%)" stroke={statusColor} strokeWidth={isFault ? 2 : 1.2}
+        x={node.x} y={node.y} width={style.width} height={16} rx="6"
+        fill={statusColor} fillOpacity={isFault ? 0.4 : 0.2}
       />
-      {/* Status bar */}
-      <rect
-        x={node.x} y={node.y} width={NODE_W} height={14} rx="3"
-        fill={statusColor} fillOpacity="0.2"
-      />
+      
       {/* Label */}
-      <text x={node.x + NODE_W / 2} y={node.y + 10} textAnchor="middle" fill={statusColor} fontSize="8" fontWeight="600">
+      <text x={node.x + style.width / 2} y={node.y + 11} textAnchor="middle" fill={statusColor} fontSize="10" fontWeight="bold">
         {node.label}
       </text>
-      {/* Icon */}
-      {renderNodeIcon(node.type, node.x + 20, node.y + 34, typeColor)}
+      
       {/* Output value */}
       {node.output !== undefined && (
-        <text x={node.x + 58} y={node.y + 32} textAnchor="middle" fill="hsl(210, 40%, 93%)" fontSize="9" fontWeight="bold">
+        <text x={node.x + style.width / 2} y={node.y + style.height - 15} textAnchor="middle" fill="hsl(210, 40%, 93%)" fontSize="12" fontWeight="bold">
           {node.output === 0 ? "OFF" : `${Math.abs(node.output)} kW`}
         </text>
       )}
+      
+      {/* Capacity badge */}
+      {node.capacity && (
+        <rect x={node.x + style.width - 45} y={node.y + 20} width={40} height={14} rx="3"
+          fill="hsl(220, 25%, 10%)" fillOpacity="0.9" stroke="hsl(215, 15%, 35%)" strokeWidth="0.5" />
+      )}
+      
       {/* Detail */}
       {node.detail && (
-        <text x={node.x + NODE_W / 2} y={node.y + 48} textAnchor="middle" fill="hsl(215, 15%, 55%)" fontSize="7">
+        <text x={node.x + style.width / 2} y={node.y + style.height - 5} textAnchor="middle" fill="hsl(215, 15%, 55%)" fontSize="8">
           {node.detail}
         </text>
       )}
+      
       {/* Fault indicator */}
       {isFault && (
-        <circle cx={node.x + NODE_W - 8} cy={node.y + 8} r="4" fill="hsl(0, 62%, 50%)">
-          <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" />
-        </circle>
+        <g>
+          <circle cx={node.x + style.width - 12} cy={node.y + 12} r="6" fill="hsl(0, 62%, 50%)" fillOpacity="0.9">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" />
+          </circle>
+          <text x={node.x + style.width - 12} y={node.y + 15} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">!</text>
+        </g>
       )}
     </g>
   );
@@ -391,11 +403,11 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
 
   const gridInfo = GRID_LABEL[topology.gridConnection];
 
-  // Compute viewBox from layout
-  const maxX = Math.max(...layout.nodes.map(n => n.x)) + NODE_W + 40;
-  const maxY = Math.max(...layout.nodes.map(n => n.y)) + NODE_H + 60;
-  const viewW = Math.max(780, maxX);
-  const viewH = Math.max(360, maxY);
+  // Compute viewBox from layout with larger spacing for new visual style
+  const maxX = Math.max(...layout.nodes.map(n => n.x + EQUIPMENT_STYLES[n.type].width)) + 60;
+  const maxY = Math.max(...layout.nodes.map(n => n.y + EQUIPMENT_STYLES[n.type].height)) + 80;
+  const viewW = Math.max(900, maxX);
+  const viewH = Math.max(400, maxY);
 
   // Summary stats
   const totalGen = layout.nodes
@@ -413,12 +425,12 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
         <div>
           <h3 className="text-lg font-semibold text-foreground">Plant Architecture — Live View</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {plant.name} • {plant.capacity.toLocaleString()} kWp • Electricity flow schematic
+            {plant.name} • {plant.capacity.toLocaleString()} kWp • Real-time power flow
           </p>
         </div>
         <div className="flex items-center gap-4">
           <span
-            className="text-xs font-bold px-2 py-1 rounded"
+            className="text-xs font-bold px-3 py-1 rounded"
             style={{ color: gridInfo.color, background: `${gridInfo.color}20`, border: `1px solid ${gridInfo.color}40` }}
           >
             {gridInfo.text}
@@ -436,12 +448,21 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
         <svg
           viewBox={`0 0 ${viewW} ${viewH}`}
           className="w-full"
-          style={{ minWidth: 600, maxHeight: 500 }}
+          style={{ minWidth: 800, maxHeight: 600, background: "hsl(220, 20%, 6%)" }}
         >
+          {/* Grid lines for reference */}
+          <defs>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M 50 0 L 0 0 0 50" fill="none" stroke="hsl(220, 15%, 12%)" strokeWidth="0.5" opacity="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+          
           {/* Edges first (behind nodes) */}
           {layout.edges.map((edge, i) => (
             <EdgeLine key={`edge-${i}`} edge={edge} idx={i} />
           ))}
+          
           {/* Nodes */}
           {layout.nodes.map(node => (
             <NodeBox key={node.id} node={node} />
@@ -450,7 +471,7 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
       </div>
 
       {/* Summary bar */}
-      <div className="p-3 border-t border-border flex flex-wrap gap-4 text-xs">
+      <div className="p-3 border-t border-border flex flex-wrap gap-4 text-xs bg-muted/20">
         <span className="text-muted-foreground font-semibold">POWER SUMMARY:</span>
         <span style={{ color: "hsl(210, 100%, 56%)" }} className="font-bold">Generation: {totalGen} kW</span>
         {totalLoad > 0 && (

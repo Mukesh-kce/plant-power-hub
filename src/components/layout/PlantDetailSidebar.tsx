@@ -26,6 +26,11 @@ const navItems = [
   { title: "Inverters", url: "/inverters", icon: Cpu },
 ];
 
+const omNavItems = [
+  { title: "Maintenance", url: "/maintenance", icon: Wrench },
+  { title: "Faults & SLA", url: "/faults", icon: AlertTriangle },
+];
+
 export function PlantDetailSidebar({ plant }: PlantDetailSidebarProps) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";

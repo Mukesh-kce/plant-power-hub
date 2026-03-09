@@ -274,7 +274,7 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             </text>
           </g>
 
-          {/* ── GRID CONNECTION ── */}
+          {/* ── UTILITY GRID ── */}
           <g>
             <rect x={gridX} y={gridY} width={88} height={60} rx="8"
               fill="#1d2535" stroke="#9333ea" strokeWidth="2" filter="url(#glow)" />
@@ -288,7 +288,27 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
               UTILITY GRID
             </text>
             <text x={gridX + 44} y={gridY + 86} textAnchor="middle" fill="#9ca3af" fontSize="9">
-              Export Active
+              {gridExport} kW Export
+            </text>
+          </g>
+
+          {/* ── POWER DISTRIBUTION SUMMARY ── */}
+          <g>
+            <rect x={30} y={360} width={740} height={38} rx="6" fill="#1d2535" fillOpacity="0.5" stroke="#374151" strokeWidth="1" />
+            <text x={50} y={378} fill="#9ca3af" fontSize="10" fontWeight="600">
+              POWER DISTRIBUTION:
+            </text>
+            <text x={200} y={378} fill="#00D4FF" fontSize="10" fontWeight="bold">
+              Total Gen: {totalGeneration} kW
+            </text>
+            <text x={360} y={378} fill="#10b981" fontSize="10" fontWeight="bold">
+              To Load: {loadConsumption} kW ({((loadConsumption/totalGeneration)*100).toFixed(0)}%)
+            </text>
+            <text x={560} y={378} fill="#a855f7" fontSize="10" fontWeight="bold">
+              To Grid: {gridExport} kW ({((gridExport/totalGeneration)*100).toFixed(0)}%)
+            </text>
+            <text x={50} y={390} fill="#6b7280" fontSize="8">
+              Green = Facility consumption • Purple = Grid export
             </text>
           </g>
 

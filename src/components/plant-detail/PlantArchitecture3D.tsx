@@ -315,10 +315,10 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
           {/* ── FAULT LEGEND ── */}
           {alerts.slice(0, 3).map((alert, i) => (
             <g key={alert.id}>
-              <rect x={30} y={310 + i * 18} width={8} height={8} rx="2"
+              <rect x={560} y={345 - i * 12} width={6} height={6} rx="1"
                 fill={alert.severity === "high" ? "#ef4444" : alert.severity === "medium" ? "#f59e0b" : "#3b82f6"} />
-              <text x={45} y={320 + i * 18} fill="#9ca3af" fontSize="9">
-                {alert.message} — SLA: {alert.slaRemaining}min
+              <text x={572} y={350 - i * 12} fill="#9ca3af" fontSize="7">
+                {alert.message.substring(0, 40)} — {alert.slaRemaining}min
               </text>
             </g>
           ))}

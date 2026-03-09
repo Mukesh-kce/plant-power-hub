@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Cable, Cpu, ChevronDown } from "lucide-react";
+import { LayoutDashboard, Package, Cable, Cpu, Wrench, AlertTriangle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {

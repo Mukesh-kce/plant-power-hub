@@ -1,0 +1,12 @@
+<!-- Add this script in your index.html before closing </head> tag -->
+<!-- This prevents FOUC (Flash of Unstyled Content) by applying theme before React loads -->
+
+<script>
+  (function() {
+    const theme = localStorage.getItem('app-theme') || 'dark';
+    const resolvedTheme = theme === 'system' 
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme;
+    document.documentElement.classList.add(resolvedTheme);
+  })();
+</script>

@@ -6,9 +6,9 @@ export function useChartColors() {
   const dark = resolvedTheme === "dark";
 
   return {
-    bg: dark ? "hsl(220, 25%, 10%)" : "hsl(0, 0%, 100%)",
-    border: dark ? "hsl(220, 15%, 18%)" : "hsl(220, 13%, 87%)",
-    text: dark ? "hsl(215, 15%, 55%)" : "hsl(220, 10%, 46%)",
+    bg: dark ? "hsl(220, 25%, 10%)" : "hsl(220, 16%, 96%)",
+    border: dark ? "hsl(220, 15%, 18%)" : "hsl(220, 13%, 82%)",
+    text: dark ? "hsl(215, 15%, 55%)" : "hsl(220, 10%, 40%)",
     fg: dark ? "hsl(210, 40%, 93%)" : "hsl(220, 20%, 14%)",
     primary: dark ? "hsl(210, 100%, 56%)" : "hsl(210, 100%, 45%)",
     success: dark ? "hsl(142, 50%, 45%)" : "hsl(142, 50%, 38%)",

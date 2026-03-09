@@ -8,23 +8,23 @@
 @layer base {
   /* ───── Light Theme (default) ───── */
   :root {
-    --background: 0 0% 98%;
+    --background: 220 16% 93%;
     --foreground: 220 20% 14%;
 
-    --card: 0 0% 100%;
+    --card: 220 16% 96%;
     --card-foreground: 220 20% 14%;
 
-    --popover: 0 0% 100%;
+    --popover: 220 16% 96%;
     --popover-foreground: 220 20% 14%;
 
     --primary: 210 100% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 92%;
-    --secondary-foreground: 220 20% 25%;
+    --secondary: 220 14% 88%;
+    --secondary-foreground: 220 20% 20%;
 
-    --muted: 220 14% 95%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 220 14% 90%;
+    --muted-foreground: 220 10% 40%;
 
     --accent: 210 100% 45%;
     --accent-foreground: 0 0% 100%;
@@ -38,19 +38,19 @@
     --warning: 38 92% 45%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 220 13% 87%;
-    --input: 220 13% 87%;
+    --border: 220 13% 82%;
+    --input: 220 13% 82%;
     --ring: 210 100% 45%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 220 14% 96%;
-    --sidebar-foreground: 220 15% 35%;
+    --sidebar-background: 220 18% 90%;
+    --sidebar-foreground: 220 15% 28%;
     --sidebar-primary: 210 100% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 90%;
+    --sidebar-accent: 220 14% 85%;
     --sidebar-accent-foreground: 220 20% 14%;
-    --sidebar-border: 220 13% 87%;
+    --sidebar-border: 220 13% 82%;
     --sidebar-ring: 210 100% 45%;
 
     --chart-1: 210 100% 45%;
@@ -60,9 +60,9 @@
     --chart-5: 270 60% 50%;
 
     /* Chart-specific semantic tokens */
-    --chart-bg: 0 0% 100%;
-    --chart-border: 220 13% 87%;
-    --chart-text: 220 10% 46%;
+    --chart-bg: 220 16% 96%;
+    --chart-border: 220 13% 82%;
+    --chart-text: 220 10% 40%;
     --chart-fg: 220 20% 14%;
   }
 

@@ -35,6 +35,15 @@ export default function PlantDetail() {
             onDateFilterChange={setSelectedDateFilter}
           />
           <main className="flex-1 overflow-auto p-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/plants")}
+              className="mb-4 -mt-2"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Plants
+            </Button>
             <Routes>
               <Route index element={<PlantOverview plant={plant} />} />
               <Route path="panels" element={<PlantPanels plant={plant} />} />

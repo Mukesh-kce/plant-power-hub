@@ -14,7 +14,7 @@ interface PlantArchitectureProps {
   plant: Plant;
 }
 
-// ─── Color mapping ───────────────────────────────────────────────────────────
+// ─── Visual Styling Per Equipment Type ───────────────────────────────────────
 
 const STATUS_COLORS: Record<string, string> = {
   online: "hsl(142, 50%, 45%)",   // --success
@@ -22,15 +22,55 @@ const STATUS_COLORS: Record<string, string> = {
   offline: "hsl(0, 62%, 50%)",    // --destructive
 };
 
-const TYPE_COLORS: Record<EquipmentType, string> = {
-  "solar-array": "hsl(210, 100%, 56%)",  // --primary
-  combiner: "hsl(210, 100%, 56%)",
-  inverter: "hsl(210, 100%, 56%)",
-  junction: "hsl(210, 100%, 56%)",
-  battery: "hsl(38, 92%, 50%)",
-  transformer: "hsl(270, 60%, 55%)",
-  grid: "hsl(270, 60%, 55%)",
-  load: "hsl(142, 50%, 45%)",
+// Each equipment type has distinct size, color, and visual style
+const EQUIPMENT_STYLES: Record<EquipmentType, {
+  width: number;
+  height: number; 
+  primaryColor: string;
+  secondaryColor: string;
+  icon: string;
+  shape: "rect" | "circle" | "diamond" | "hexagon";
+}> = {
+  "solar-array": { 
+    width: 140, height: 90, 
+    primaryColor: "hsl(210, 100%, 56%)", secondaryColor: "hsl(210, 100%, 75%)",
+    icon: "panels", shape: "rect" 
+  },
+  "combiner": { 
+    width: 80, height: 60, 
+    primaryColor: "hsl(270, 60%, 55%)", secondaryColor: "hsl(270, 60%, 70%)",
+    icon: "box", shape: "rect" 
+  },
+  "inverter": { 
+    width: 120, height: 70, 
+    primaryColor: "hsl(38, 92%, 50%)", secondaryColor: "hsl(38, 92%, 65%)",
+    icon: "converter", shape: "rect" 
+  },
+  "junction": { 
+    width: 80, height: 80, 
+    primaryColor: "hsl(210, 100%, 56%)", secondaryColor: "hsl(210, 100%, 75%)",
+    icon: "hub", shape: "circle" 
+  },
+  "battery": { 
+    width: 110, height: 80, 
+    primaryColor: "hsl(142, 50%, 45%)", secondaryColor: "hsl(142, 50%, 60%)",
+    icon: "battery", shape: "rect" 
+  },
+  "transformer": { 
+    width: 100, height: 70, 
+    primaryColor: "hsl(270, 60%, 55%)", secondaryColor: "hsl(270, 60%, 70%)",
+    icon: "transformer", shape: "rect" 
+  },
+  "grid": { 
+    width: 100, height: 80, 
+    primaryColor: "hsl(270, 60%, 55%)", secondaryColor: "hsl(270, 60%, 70%)",
+    icon: "grid", shape: "rect" 
+  },
+  "load": { 
+    width: 100, height: 70, 
+    primaryColor: "hsl(142, 50%, 45%)", secondaryColor: "hsl(142, 50%, 60%)",
+    icon: "building", shape: "rect" 
+  },
 };
 
 const GRID_LABEL: Record<GridConnection, { text: string; color: string }> = {

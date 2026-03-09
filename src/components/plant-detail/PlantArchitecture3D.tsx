@@ -33,15 +33,15 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
   const invStartX = 420;
   const invYs = inverters.slice(0, 4).map((_, i) => 70 + i * 72);
 
-  // Power distribution
-  const junctionX = 540;
+  // Power distribution - spread out horizontally
+  const junctionX = 560;
   const junctionY = 180;
   
-  const loadX = 580;
-  const loadY = 80;
+  const loadX = 660;
+  const loadY = 60;
   
-  const gridX = 640;
-  const gridY = 260;
+  const gridX = 660;
+  const gridY = 280;
 
   // Calculate power distribution
   const totalGeneration = inverters.slice(0, 4).reduce((sum, inv) => sum + inv.output, 0);
@@ -66,9 +66,9 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
 
       <div className="overflow-x-auto">
         <svg
-          viewBox="0 0 800 420"
+          viewBox="0 0 850 440"
           className="w-full"
-          style={{ minWidth: 600, maxHeight: 480, background: "transparent" }}
+          style={{ minWidth: 700, maxHeight: 500, background: "transparent" }}
         >
           <defs>
             {/* Animated electricity flow */}
@@ -95,8 +95,8 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             { x: panelStartX + (panelsPerRow * (panelW + panelGapX)) / 2 - 20, y: 28, label: "SOLAR PANELS" },
             { x: combinerX + 22, y: 28, label: "COMBINER" },
             { x: invStartX + 30, y: 28, label: "INVERTERS" },
-            { x: loadX + 44, y: 28, label: "FACILITY LOAD" },
-            { x: gridX + 44, y: 28, label: "UTILITY GRID" },
+            { x: loadX + 44, y: 48, label: "FACILITY LOAD" },
+            { x: gridX + 44, y: 270, label: "UTILITY GRID" },
           ].map(({ x, y, label }) => (
             <text key={label} x={x} y={y} textAnchor="middle" fill="#6b7280" fontSize="9" fontWeight="600" letterSpacing="1">
               {label}
@@ -238,21 +238,21 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
           </line>
           {/* Load power label */}
-          <rect x={loadX + 10} y={junctionY - 35} width={68} height={18} rx="4" fill="#10b981" fillOpacity="0.2" stroke="#10b981" strokeWidth="1" />
-          <text x={loadX + 44} y={junctionY - 22} textAnchor="middle" fill="#10b981" fontSize="9" fontWeight="bold">
+          <rect x={junctionX + 30} y={junctionY - 60} width={70} height={18} rx="4" fill="#10b981" fillOpacity="0.2" stroke="#10b981" strokeWidth="1" />
+          <text x={junctionX + 65} y={junctionY - 47} textAnchor="middle" fill="#10b981" fontSize="9" fontWeight="bold">
             {loadConsumption} kW
           </text>
 
           {/* Wire from junction to grid */}
           <line 
-            x1={junctionX} y1={junctionY} x2={gridX} y2={gridY + 30}
+            x1={junctionX} y1={junctionY} x2={gridX + 44} y2={gridY + 30}
             stroke="#9333ea" strokeWidth="2" strokeDasharray="6,4" opacity="0.8"
             markerEnd="url(#arrowPurple)">
             <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite" />
           </line>
           {/* Grid export label */}
-          <rect x={gridX - 40} y={junctionY + 45} width={68} height={18} rx="4" fill="#9333ea" fillOpacity="0.2" stroke="#9333ea" strokeWidth="1" />
-          <text x={gridX - 6} y={junctionY + 58} textAnchor="middle" fill="#a855f7" fontSize="9" fontWeight="bold">
+          <rect x={junctionX + 30} y={junctionY + 40} width={70} height={18} rx="4" fill="#9333ea" fillOpacity="0.2" stroke="#9333ea" strokeWidth="1" />
+          <text x={junctionX + 65} y={junctionY + 53} textAnchor="middle" fill="#a855f7" fontSize="9" fontWeight="bold">
             {gridExport} kW
           </text>
 
@@ -294,34 +294,23 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
 
           {/* ── POWER DISTRIBUTION SUMMARY ── */}
           <g>
-            <rect x={30} y={360} width={740} height={38} rx="6" fill="#1d2535" fillOpacity="0.5" stroke="#374151" strokeWidth="1" />
-            <text x={50} y={378} fill="#9ca3af" fontSize="10" fontWeight="600">
+            <rect x={30} y={380} width={790} height={38} rx="6" fill="#1d2535" fillOpacity="0.5" stroke="#374151" strokeWidth="1" />
+            <text x={50} y={398} fill="#9ca3af" fontSize="10" fontWeight="600">
               POWER DISTRIBUTION:
             </text>
-            <text x={200} y={378} fill="#00D4FF" fontSize="10" fontWeight="bold">
+            <text x={200} y={398} fill="#00D4FF" fontSize="10" fontWeight="bold">
               Total Gen: {totalGeneration} kW
             </text>
-            <text x={360} y={378} fill="#10b981" fontSize="10" fontWeight="bold">
+            <text x={380} y={398} fill="#10b981" fontSize="10" fontWeight="bold">
               To Load: {loadConsumption} kW ({((loadConsumption/totalGeneration)*100).toFixed(0)}%)
             </text>
-            <text x={560} y={378} fill="#a855f7" fontSize="10" fontWeight="bold">
+            <text x={580} y={398} fill="#a855f7" fontSize="10" fontWeight="bold">
               To Grid: {gridExport} kW ({((gridExport/totalGeneration)*100).toFixed(0)}%)
             </text>
-            <text x={50} y={390} fill="#6b7280" fontSize="8">
+            <text x={50} y={410} fill="#6b7280" fontSize="8">
               Green = Facility consumption • Purple = Grid export
             </text>
           </g>
-
-          {/* ── FAULT LEGEND ── */}
-          {alerts.slice(0, 3).map((alert, i) => (
-            <g key={alert.id}>
-              <rect x={560} y={345 - i * 12} width={6} height={6} rx="1"
-                fill={alert.severity === "high" ? "#ef4444" : alert.severity === "medium" ? "#f59e0b" : "#3b82f6"} />
-              <text x={572} y={350 - i * 12} fill="#9ca3af" fontSize="7">
-                {alert.message.substring(0, 40)} — {alert.slaRemaining}min
-              </text>
-            </g>
-          ))}
         </svg>
       </div>
     </Card>

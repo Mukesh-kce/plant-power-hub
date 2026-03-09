@@ -3,15 +3,7 @@ import { KPICards } from "@/components/dashboard/KPICards";
 import { PerformanceChart } from "@/components/dashboard/PerformanceChart";
 import { InverterGrid } from "@/components/dashboard/InverterGrid";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
-import { lazy, Suspense } from "react";
-import { Card } from "@/components/ui/card";
-
-// Lazy load the 3D component to avoid blocking initial render
-const PlantArchitecture3D = lazy(() => 
-  import("@/components/plant-detail/PlantArchitecture3D").then(module => ({
-    default: module.PlantArchitecture3D
-  }))
-);
+import { PlantArchitecture3D } from "@/components/plant-detail/PlantArchitecture3D";
 
 interface PlantOverviewProps {
   plant: Plant;

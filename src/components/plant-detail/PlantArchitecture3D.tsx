@@ -1,206 +1,234 @@
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Text, Line } from '@react-three/drei';
-import { useRef, useMemo } from 'react';
-import * as THREE from 'three';
-import { Plant, inverters } from '@/data/mock-data';
-import { Card } from '@/components/ui/card';
+import { Plant, inverters, alerts } from "@/data/mock-data";
+import { Card } from "@/components/ui/card";
+import { useMemo } from "react";
 
-interface PlantArchitecture3DProps {
+interface PlantArchitectureProps {
   plant: Plant;
 }
 
-function ElectricityFlow({ start, end, active }: { start: [number, number, number]; end: [number, number, number]; active: boolean }) {
-  const points = useMemo(() => [new THREE.Vector3(...start), new THREE.Vector3(...end)], [start, end]);
-  
-  return (
-    <Line
-      points={points}
-      color={active ? "#00D4FF" : "#374151"}
-      lineWidth={active ? 2 : 1}
-      dashed={active}
-      dashScale={50}
-      dashSize={0.1}
-      gapSize={0.05}
-    />
-  );
-}
+const STATUS_COLOR: Record<string, string> = {
+  online: "#10b981",
+  warning: "#f59e0b",
+  offline: "#ef4444",
+};
 
-function SolarPanel({ position, status, label }: { position: [number, number, number]; status: 'online' | 'warning' | 'offline'; label: string }) {
-  const color = status === 'online' ? '#10b981' : status === 'warning' ? '#f59e0b' : '#ef4444';
-  
-  return (
-    <group position={position}>
-      <mesh>
-        <boxGeometry args={[0.8, 0.05, 1.2]} />
-        <meshStandardMaterial color={color} metalness={0.7} roughness={0.3} />
-      </mesh>
-      {status !== 'online' && (
-        <mesh position={[0, 0.3, 0]}>
-          <sphereGeometry args={[0.15, 16, 16]} />
-          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.8} />
-        </mesh>
-      )}
-    </group>
-  );
-}
+export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
+  const faultIds = useMemo(() => new Set(alerts.map(a => {
+    const match = a.message.match(/INV-\d+/);
+    return match ? match[0] : null;
+  }).filter(Boolean)), []);
 
-function InverterUnit({ position, inverter }: { position: [number, number, number]; inverter: typeof inverters[0] }) {
-  const color = inverter.status === 'online' ? '#3b82f6' : inverter.status === 'warning' ? '#f59e0b' : '#ef4444';
-  
-  return (
-    <group position={position}>
-      <mesh>
-        <boxGeometry args={[1.5, 2, 0.8]} />
-        <meshStandardMaterial color={color} metalness={0.6} roughness={0.4} />
-      </mesh>
-      <Text
-        position={[0, 2.5, 0]}
-        fontSize={0.3}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {inverter.name}
-      </Text>
-      {inverter.status !== 'online' && (
-        <mesh position={[0, 0, 0.6]}>
-          <sphereGeometry args={[0.2, 16, 16]} />
-          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1} />
-        </mesh>
-      )}
-    </group>
-  );
-}
+  const panelRows = 3;
+  const panelsPerRow = 4;
+  const panelW = 48;
+  const panelH = 30;
+  const panelGapX = 12;
+  const panelGapY = 14;
+  const panelStartX = 30;
+  const panelStartY = 50;
 
-function GridConnection({ position }: { position: [number, number, number] }) {
-  return (
-    <group position={position}>
-      <mesh>
-        <cylinderGeometry args={[0.3, 0.3, 3, 16]} />
-        <meshStandardMaterial color="#9333ea" metalness={0.8} roughness={0.2} />
-      </mesh>
-      <Text
-        position={[0, 2, 0]}
-        fontSize={0.4}
-        color="#00D4FF"
-        anchorX="center"
-        anchorY="middle"
-      >
-        GRID
-      </Text>
-    </group>
-  );
-}
+  const combinerX = 280;
+  const combinerYs = [90, 180, 270];
 
-function PlantScene({ plant }: { plant: Plant }) {
-  // Layout configuration
-  const panelRows = 4;
-  const panelsPerRow = 6;
-  const panelSpacing = 1.5;
-  const inverterSpacing = 4;
-  
-  // Generate panel positions (left side)
-  const panels = useMemo(() => {
-    const result = [];
-    for (let row = 0; row < panelRows; row++) {
-      for (let col = 0; col < panelsPerRow; col++) {
-        const status = Math.random() > 0.85 ? (Math.random() > 0.5 ? 'warning' : 'offline') : 'online';
-        result.push({
-          position: [col * panelSpacing - 8, 0.5, row * panelSpacing - 3] as [number, number, number],
-          status: status as 'online' | 'warning' | 'offline',
-          label: `P${row * panelsPerRow + col + 1}`
-        });
-      }
-    }
-    return result;
-  }, []);
+  const invStartX = 420;
+  const invYs = inverters.slice(0, 4).map((_, i) => 70 + i * 72);
 
-  // Position inverters (center)
-  const inverterPositions = useMemo(() => {
-    return inverters.slice(0, 4).map((inv, i) => ({
-      inverter: inv,
-      position: [2, 1, i * inverterSpacing - 6] as [number, number, number]
-    }));
-  }, []);
-
-  // Grid connection (right side)
-  const gridPosition: [number, number, number] = [10, 1.5, 0];
+  const gridX = 640;
+  const gridY = 180;
 
   return (
-    <>
-      {/* Ambient lighting */}
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={0.8} />
-      <pointLight position={[-10, 10, -10]} intensity={0.5} color="#00D4FF" />
-
-      {/* Ground plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[30, 20]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.1} roughness={0.9} />
-      </mesh>
-
-      {/* Solar panels */}
-      {panels.map((panel, i) => (
-        <SolarPanel key={`panel-${i}`} {...panel} />
-      ))}
-
-      {/* Inverters */}
-      {inverterPositions.map((inv, i) => (
-        <InverterUnit key={`inv-${i}`} {...inv} />
-      ))}
-
-      {/* Grid connection */}
-      <GridConnection position={gridPosition} />
-
-      {/* Electricity flow lines - Panels to Inverters */}
-      {panels.slice(0, 6).map((panel, i) => {
-        const inverterIdx = Math.floor(i / 2);
-        return (
-          <ElectricityFlow
-            key={`flow-p-i-${i}`}
-            start={panel.position}
-            end={inverterPositions[inverterIdx % inverterPositions.length].position}
-            active={panel.status === 'online'}
-          />
-        );
-      })}
-
-      {/* Electricity flow lines - Inverters to Grid */}
-      {inverterPositions.map((inv, i) => (
-        <ElectricityFlow
-          key={`flow-i-g-${i}`}
-          start={inv.position}
-          end={gridPosition}
-          active={inv.inverter.status === 'online'}
-        />
-      ))}
-
-      <OrbitControls 
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        maxPolarAngle={Math.PI / 2}
-        minDistance={8}
-        maxDistance={25}
-      />
-      <PerspectiveCamera makeDefault position={[0, 12, 15]} fov={60} />
-    </>
-  );
-}
-
-export function PlantArchitecture3D({ plant }: PlantArchitecture3DProps) {
-  return (
-    <Card className="w-full h-[600px] bg-card border-border overflow-hidden">
-      <div className="p-4 border-b border-border">
-        <h3 className="text-lg font-semibold text-foreground">Plant Architecture - 3D View</h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          Interactive visualization • Drag to rotate • Scroll to zoom • Faults highlighted
-        </p>
+    <Card className="w-full bg-card border-border overflow-hidden">
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Plant Architecture — Live View</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Electricity flow • Faults highlighted in red
+          </p>
+        </div>
+        <div className="flex gap-4 text-xs">
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full inline-block" style={{background:"#10b981"}}></span> Online</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full inline-block" style={{background:"#f59e0b"}}></span> Warning</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full inline-block" style={{background:"#ef4444"}}></span> Offline/Fault</span>
+        </div>
       </div>
-      <div className="w-full h-[calc(100%-80px)]">
-        <Canvas shadows>
-          <PlantScene plant={plant} />
-        </Canvas>
+
+      <div className="overflow-x-auto">
+        <svg
+          viewBox="0 0 750 370"
+          className="w-full"
+          style={{ minWidth: 600, maxHeight: 420, background: "transparent" }}
+        >
+          <defs>
+            {/* Animated electricity flow */}
+            <marker id="arrowBlue" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#00D4FF" />
+            </marker>
+            <marker id="arrowGray" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#374151" />
+            </marker>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+              <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          {/* ── SECTION LABELS ── */}
+          {[
+            { x: panelStartX + (panelsPerRow * (panelW + panelGapX)) / 2 - 20, y: 28, label: "SOLAR PANELS" },
+            { x: combinerX + 22, y: 28, label: "COMBINER" },
+            { x: invStartX + 30, y: 28, label: "INVERTERS" },
+            { x: gridX + 22, y: 28, label: "GRID" },
+          ].map(({ x, y, label }) => (
+            <text key={label} x={x} y={y} textAnchor="middle" fill="#6b7280" fontSize="9" fontWeight="600" letterSpacing="1">
+              {label}
+            </text>
+          ))}
+
+          {/* ── SOLAR PANEL GRID ── */}
+          {Array.from({ length: panelRows }).map((_, row) =>
+            Array.from({ length: panelsPerRow }).map((_, col) => {
+              const x = panelStartX + col * (panelW + panelGapX);
+              const y = panelStartY + row * (panelH + panelGapY);
+              const fault = row === 1 && col === 1; // simulate one fault panel
+              const color = fault ? "#ef4444" : "#3b82f6";
+              return (
+                <g key={`panel-${row}-${col}`}>
+                  <rect x={x} y={y} width={panelW} height={panelH} rx="3"
+                    fill={color} fillOpacity="0.25" stroke={color} strokeWidth="1.5" />
+                  {/* Panel cell lines */}
+                  <line x1={x + panelW / 3} y1={y} x2={x + panelW / 3} y2={y + panelH} stroke={color} strokeWidth="0.5" opacity="0.5" />
+                  <line x1={x + (2 * panelW) / 3} y1={y} x2={x + (2 * panelW) / 3} y2={y + panelH} stroke={color} strokeWidth="0.5" opacity="0.5" />
+                  <line x1={x} y1={y + panelH / 2} x2={x + panelW} y2={y + panelH / 2} stroke={color} strokeWidth="0.5" opacity="0.5" />
+                  {fault && (
+                    <text x={x + panelW / 2} y={y + panelH / 2 + 4} textAnchor="middle" fill="#ef4444" fontSize="10" fontWeight="bold">!</text>
+                  )}
+                </g>
+              );
+            })
+          )}
+
+          {/* Wires from panel rows to combiners */}
+          {combinerYs.map((cy, i) => {
+            const rowY = panelStartY + i * (panelH + panelGapY) + panelH / 2;
+            const wireX = panelStartX + panelsPerRow * (panelW + panelGapX) - panelGapX;
+            return (
+              <g key={`wire-panel-comb-${i}`}>
+                <line x1={wireX} y1={rowY} x2={combinerX - 5} y2={cy + 18}
+                  stroke="#00D4FF" strokeWidth="1.5" strokeDasharray="6,4" opacity="0.7">
+                  <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite" />
+                </line>
+              </g>
+            );
+          })}
+
+          {/* ── COMBINER BOXES ── */}
+          {combinerYs.map((cy, i) => (
+            <g key={`combiner-${i}`}>
+              <rect x={combinerX} y={cy} width={44} height={36} rx="5"
+                fill="#1d2535" stroke="#00D4FF" strokeWidth="1.5" />
+              <text x={combinerX + 22} y={cy + 14} textAnchor="middle" fill="#00D4FF" fontSize="7" fontWeight="bold">CB</text>
+              <text x={combinerX + 22} y={cy + 26} textAnchor="middle" fill="#9ca3af" fontSize="7">{`S${(i * 2) + 1}-${(i * 2) + 2}`}</text>
+            </g>
+          ))}
+
+          {/* Wires from combiners to inverters */}
+          {combinerYs.map((cy, ci) => {
+            const invPairs = [[0, 1], [2, 3], [3]];
+            return (invPairs[ci] || []).map((ii) => {
+              const iy = invYs[ii];
+              if (iy === undefined) return null;
+              return (
+                <line key={`wire-comb-inv-${ci}-${ii}`}
+                  x1={combinerX + 44} y1={cy + 18} x2={invStartX - 5} y2={iy + 26}
+                  stroke="#00D4FF" strokeWidth="1.5" strokeDasharray="6,4" opacity="0.7"
+                  markerEnd="url(#arrowBlue)">
+                  <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite" />
+                </line>
+              );
+            });
+          })}
+
+          {/* ── INVERTERS ── */}
+          {inverters.slice(0, 4).map((inv, i) => {
+            const iy = invYs[i];
+            const color = STATUS_COLOR[inv.status];
+            const hasFault = faultIds.has(inv.name);
+            return (
+              <g key={inv.id}>
+                <rect x={invStartX} y={iy} width={80} height={52} rx="6"
+                  fill="#1d2535" stroke={color} strokeWidth={hasFault ? 2.5 : 1.5}
+                  filter={hasFault ? "url(#glow)" : undefined} />
+                <rect x={invStartX} y={iy} width={80} height={12} rx="3"
+                  fill={color} fillOpacity="0.3" />
+                <text x={invStartX + 40} y={iy + 9} textAnchor="middle" fill={color} fontSize="8" fontWeight="bold">
+                  {inv.name}
+                </text>
+                <text x={invStartX + 40} y={iy + 25} textAnchor="middle" fill="white" fontSize="10" fontWeight="semibold">
+                  {inv.output > 0 ? `${inv.output} kW` : "OFFLINE"}
+                </text>
+                <text x={invStartX + 40} y={iy + 38} textAnchor="middle" fill="#9ca3af" fontSize="8">
+                  {inv.temperature}°C
+                </text>
+                {inv.statusDetail && (
+                  <text x={invStartX + 40} y={iy + 48} textAnchor="middle" fill={color} fontSize="7">
+                    {inv.statusDetail}
+                  </text>
+                )}
+                {hasFault && (
+                  <circle cx={invStartX + 70} cy={iy + 8} r="5" fill="#ef4444">
+                    <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" />
+                  </circle>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Wires from inverters to grid */}
+          {invYs.map((iy, i) => {
+            const inv = inverters[i];
+            const color = inv?.status === "online" ? "#00D4FF" : "#374151";
+            const active = inv?.status === "online";
+            return (
+              <line key={`wire-inv-grid-${i}`}
+                x1={invStartX + 80} y1={iy + 26} x2={gridX - 5} y2={gridY + 30}
+                stroke={color} strokeWidth="1.5" strokeDasharray="6,4" opacity="0.7"
+                markerEnd={active ? "url(#arrowBlue)" : "url(#arrowGray)"}>
+                {active && (
+                  <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
+                )}
+              </line>
+            );
+          })}
+
+          {/* ── GRID CONNECTION ── */}
+          <g>
+            <rect x={gridX} y={gridY} width={88} height={60} rx="8"
+              fill="#1d2535" stroke="#9333ea" strokeWidth="2" filter="url(#glow)" />
+            {/* Power tower icon */}
+            <line x1={gridX + 44} y1={gridY + 8} x2={gridX + 44} y2={gridY + 52} stroke="#9333ea" strokeWidth="2" />
+            <line x1={gridX + 20} y1={gridY + 22} x2={gridX + 68} y2={gridY + 22} stroke="#9333ea" strokeWidth="2" />
+            <line x1={gridX + 26} y1={gridY + 36} x2={gridX + 62} y2={gridY + 36} stroke="#9333ea" strokeWidth="2" />
+            <line x1={gridX + 20} y1={gridY + 22} x2={gridX + 26} y2={gridY + 52} stroke="#9333ea" strokeWidth="1.5" />
+            <line x1={gridX + 68} y1={gridY + 22} x2={gridX + 62} y2={gridY + 52} stroke="#9333ea" strokeWidth="1.5" />
+            <text x={gridX + 44} y={gridY + 74} textAnchor="middle" fill="#a855f7" fontSize="10" fontWeight="bold">
+              UTILITY GRID
+            </text>
+            <text x={gridX + 44} y={gridY + 86} textAnchor="middle" fill="#9ca3af" fontSize="9">
+              Export Active
+            </text>
+          </g>
+
+          {/* ── FAULT LEGEND ── */}
+          {alerts.slice(0, 3).map((alert, i) => (
+            <g key={alert.id}>
+              <rect x={30} y={310 + i * 18} width={8} height={8} rx="2"
+                fill={alert.severity === "high" ? "#ef4444" : alert.severity === "medium" ? "#f59e0b" : "#3b82f6"} />
+              <text x={45} y={320 + i * 18} fill="#9ca3af" fontSize="9">
+                {alert.message} — SLA: {alert.slaRemaining}min
+              </text>
+            </g>
+          ))}
+        </svg>
       </div>
     </Card>
   );

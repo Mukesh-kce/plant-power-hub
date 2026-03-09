@@ -6,6 +6,12 @@ export interface Plant {
   location: string;
   capacity: number; // kWp
   healthScore: number;
+  image: string;
+  commissionedDate: string;
+  panelCount: number;
+  stringCount: number;
+  inverterCount: number;
+  area: string; // acres
 }
 
 export interface KPIData {
@@ -101,10 +107,10 @@ export interface MaintenanceVisit {
 // ─── Mock Data ───────────────────────────────────────────────────────────────
 
 export const plants: Plant[] = [
-  { id: "p1", name: "Rajasthan Solar Park", location: "Jodhpur, RJ", capacity: 5000, healthScore: 92 },
-  { id: "p2", name: "Gujarat Sun Farm", location: "Kutch, GJ", capacity: 3200, healthScore: 78 },
-  { id: "p3", name: "Karnataka PV Station", location: "Tumkur, KA", capacity: 2100, healthScore: 65 },
-  { id: "p4", name: "Tamil Nadu Array", location: "Ramanathapuram, TN", capacity: 4500, healthScore: 88 },
+  { id: "p1", name: "Rajasthan Solar Park", location: "Jodhpur, RJ", capacity: 5000, healthScore: 92, image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80", commissionedDate: "2020-03-15", panelCount: 12500, stringCount: 24, inverterCount: 8, area: "25" },
+  { id: "p2", name: "Gujarat Sun Farm", location: "Kutch, GJ", capacity: 3200, healthScore: 78, image: "https://images.unsplash.com/photo-1548337138-e87d889cc369?w=800&q=80", commissionedDate: "2019-11-20", panelCount: 8000, stringCount: 16, inverterCount: 6, area: "16" },
+  { id: "p3", name: "Karnataka PV Station", location: "Tumkur, KA", capacity: 2100, healthScore: 65, image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80", commissionedDate: "2021-07-08", panelCount: 5250, stringCount: 12, inverterCount: 4, area: "11" },
+  { id: "p4", name: "Tamil Nadu Array", location: "Ramanathapuram, TN", capacity: 4500, healthScore: 88, image: "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=800&q=80", commissionedDate: "2020-09-12", panelCount: 11250, stringCount: 20, inverterCount: 7, area: "22" },
 ];
 
 export const kpiData: KPIData = {

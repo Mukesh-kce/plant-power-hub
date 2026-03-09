@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { performanceMetrics, stringData, hourlyData } from "@/data/mock-data";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useChartColors, useTooltipStyle } from "@/hooks/use-chart-colors";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, ScatterChart, Scatter,
@@ -20,23 +21,15 @@ const mpptData = [
   { name: "MPPT-4", dcEff: 98.0, acEff: 96.3 },
 ];
 
-const chartColors = {
-  bg: "hsl(220, 25%, 10%)",
-  border: "hsl(220, 15%, 18%)",
-  text: "hsl(215, 15%, 55%)",
-  fg: "hsl(210, 40%, 93%)",
-  primary: "hsl(210, 100%, 56%)",
-  success: "hsl(142, 50%, 45%)",
-  warning: "hsl(38, 92%, 50%)",
-};
-
 export default function Performance() {
+  const cc = useChartColors();
+  const tooltipProps = useTooltipStyle();
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <h1 className="text-xl font-semibold text-foreground">Performance Analytics</h1>
 
-        {/* KPI row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: "PR %", value: `${performanceMetrics.pr}%`, color: "text-primary" },
@@ -68,11 +61,11 @@ export default function Performance() {
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={degradationData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} />
-                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                        <YAxis domain={[76, 84]} tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                        <Tooltip contentStyle={{ backgroundColor: chartColors.bg, border: `1px solid ${chartColors.border}`, borderRadius: "8px", fontSize: "12px", color: chartColors.fg }} />
-                        <Line type="monotone" dataKey="pr" stroke={chartColors.warning} strokeWidth={2} dot={{ r: 4, fill: chartColors.warning }} name="PR %" />
+                        <CartesianGrid strokeDasharray="3 3" stroke={cc.border} />
+                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                        <YAxis domain={[76, 84]} tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                        <Tooltip {...tooltipProps} />
+                        <Line type="monotone" dataKey="pr" stroke={cc.warning} strokeWidth={2} dot={{ r: 4, fill: cc.warning }} name="PR %" />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -85,11 +78,11 @@ export default function Performance() {
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <ScatterChart>
-                        <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} />
-                        <XAxis dataKey="irradiance" name="Irradiance" tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                        <YAxis dataKey="actual" name="Output" tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                        <Tooltip contentStyle={{ backgroundColor: chartColors.bg, border: `1px solid ${chartColors.border}`, borderRadius: "8px", fontSize: "12px", color: chartColors.fg }} />
-                        <Scatter data={hourlyData} fill={chartColors.primary} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={cc.border} />
+                        <XAxis dataKey="irradiance" name="Irradiance" tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                        <YAxis dataKey="actual" name="Output" tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                        <Tooltip {...tooltipProps} />
+                        <Scatter data={hourlyData} fill={cc.primary} />
                       </ScatterChart>
                     </ResponsiveContainer>
                   </div>
@@ -105,12 +98,12 @@ export default function Performance() {
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={stringData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} />
-                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: chartColors.text }} stroke={chartColors.border} />
-                      <YAxis tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                      <Tooltip contentStyle={{ backgroundColor: chartColors.bg, border: `1px solid ${chartColors.border}`, borderRadius: "8px", fontSize: "12px", color: chartColors.fg }} />
-                      <Bar dataKey="expected" fill={chartColors.primary} opacity={0.4} name="Expected (kW)" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="output" fill={chartColors.success} name="Actual (kW)" radius={[4, 4, 0, 0]} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={cc.border} />
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: cc.text }} stroke={cc.border} />
+                      <YAxis tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                      <Tooltip {...tooltipProps} />
+                      <Bar dataKey="expected" fill={cc.primary} opacity={0.4} name="Expected (kW)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="output" fill={cc.success} name="Actual (kW)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -145,12 +138,12 @@ export default function Performance() {
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={mpptData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} />
-                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                      <YAxis domain={[92, 100]} tick={{ fontSize: 11, fill: chartColors.text }} stroke={chartColors.border} />
-                      <Tooltip contentStyle={{ backgroundColor: chartColors.bg, border: `1px solid ${chartColors.border}`, borderRadius: "8px", fontSize: "12px", color: chartColors.fg }} />
-                      <Bar dataKey="dcEff" fill={chartColors.primary} name="DC Efficiency %" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="acEff" fill={chartColors.success} name="AC Efficiency %" radius={[4, 4, 0, 0]} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={cc.border} />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                      <YAxis domain={[92, 100]} tick={{ fontSize: 11, fill: cc.text }} stroke={cc.border} />
+                      <Tooltip {...tooltipProps} />
+                      <Bar dataKey="dcEff" fill={cc.primary} name="DC Efficiency %" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="acEff" fill={cc.success} name="AC Efficiency %" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

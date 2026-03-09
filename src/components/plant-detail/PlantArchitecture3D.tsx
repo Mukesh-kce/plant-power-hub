@@ -9,43 +9,17 @@ import {
   EquipmentType,
   GridConnection,
 } from "@/data/topology";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 interface PlantArchitectureProps {
   plant: Plant;
 }
 
-// ─── Color mapping ───────────────────────────────────────────────────────────
-
-const STATUS_COLORS: Record<string, string> = {
-  online: "hsl(142, 50%, 45%)",   // --success
-  warning: "hsl(38, 92%, 50%)",   // --warning
-  offline: "hsl(0, 62%, 50%)",    // --destructive
-};
-
-const TYPE_COLORS: Record<EquipmentType, string> = {
-  "solar-array": "hsl(210, 100%, 56%)",  // --primary
-  combiner: "hsl(210, 100%, 56%)",
-  inverter: "hsl(210, 100%, 56%)",
-  junction: "hsl(210, 100%, 56%)",
-  battery: "hsl(38, 92%, 50%)",
-  transformer: "hsl(270, 60%, 55%)",
-  grid: "hsl(270, 60%, 55%)",
-  load: "hsl(142, 50%, 45%)",
-};
-
-const GRID_LABEL: Record<GridConnection, { text: string; color: string }> = {
-  "on-grid": { text: "ON-GRID", color: "hsl(142, 50%, 45%)" },
-  "off-grid": { text: "OFF-GRID", color: "hsl(38, 92%, 50%)" },
-  hybrid: { text: "HYBRID", color: "hsl(270, 60%, 55%)" },
-};
-
 // ─── Node dimensions ────────────────────────────────────────────────────────
-
 const NODE_W = 100;
 const NODE_H = 56;
 
-// ─── SVG Icon renderers (tiny inline icons per type) ─────────────────────────
-
+// ─── SVG Icon renderers ───────────────────────────────────────────────────────
 function renderNodeIcon(type: EquipmentType, cx: number, cy: number, color: string) {
   switch (type) {
     case "solar-array":
@@ -103,14 +77,12 @@ function renderNodeIcon(type: EquipmentType, cx: number, cy: number, color: stri
 }
 
 // ─── Edge renderer ───────────────────────────────────────────────────────────
-
-function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
+function EdgeLine({ edge, idx, colors }: { edge: LayoutEdge; idx: number; colors: ReturnType<typeof useChartColors> & { nodeBg: string; inactiveLine: string; typeColor: (type: EquipmentType) => string } }) {
   const fromX = edge.from.x + NODE_W / 2;
   const fromY = edge.from.y + NODE_H / 2;
   const toX = edge.to.x + NODE_W / 2;
   const toY = edge.to.y + NODE_H / 2;
 
-  // Clip to node edges
   const dx = toX - fromX;
   const dy = toY - fromY;
   const dist = Math.sqrt(dx * dx + dy * dy);
@@ -124,11 +96,10 @@ function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
   const ey = toY - uy * (NODE_H / 2 + 4);
 
   const isActive = edge.from.status !== "offline" && edge.to.status !== "offline" && (edge.powerKW ?? 0) > 0;
-  const color = isActive ? TYPE_COLORS[edge.to.type] : "hsl(220, 15%, 25%)";
+  const color = isActive ? colors.typeColor(edge.to.type) : colors.inactiveLine;
 
   const midX = (sx + ex) / 2;
   const midY = (sy + ey) / 2;
-
   const markerId = `arrow-${idx}`;
 
   return (
@@ -158,14 +129,14 @@ function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
       {edge.powerKW !== undefined && edge.powerKW > 0 && (
         <g>
           <rect x={midX - 22} y={midY - 8} width={44} height={14} rx="3"
-            fill="hsl(220, 25%, 10%)" fillOpacity="0.9" stroke={color} strokeWidth="0.5" />
+            fill={colors.nodeBg} fillOpacity="0.95" stroke={color} strokeWidth="0.5" />
           <text x={midX} y={midY + 2} textAnchor="middle" fill={color} fontSize="8" fontWeight="600">
             {edge.powerKW} kW
           </text>
         </g>
       )}
       {edge.label && (
-        <text x={midX} y={midY + 16} textAnchor="middle" fill="hsl(215, 15%, 55%)" fontSize="7">
+        <text x={midX} y={midY + 16} textAnchor="middle" fill={colors.text} fontSize="7">
           {edge.label}
         </text>
       )}
@@ -174,45 +145,37 @@ function EdgeLine({ edge, idx }: { edge: LayoutEdge; idx: number }) {
 }
 
 // ─── Node renderer ───────────────────────────────────────────────────────────
-
-function NodeBox({ node }: { node: LayoutNode }) {
-  const statusColor = STATUS_COLORS[node.status];
-  const typeColor = TYPE_COLORS[node.type];
+function NodeBox({ node, colors }: { node: LayoutNode; colors: ReturnType<typeof useChartColors> & { nodeBg: string; statusColor: (s: string) => string; typeColor: (t: EquipmentType) => string } }) {
+  const statusColor = colors.statusColor(node.status);
+  const typeColor = colors.typeColor(node.type);
   const isFault = node.status === "offline";
 
   return (
     <g>
-      {/* Card background */}
       <rect
         x={node.x} y={node.y} width={NODE_W} height={NODE_H} rx="6"
-        fill="hsl(220, 25%, 10%)" stroke={statusColor} strokeWidth={isFault ? 2 : 1.2}
+        fill={colors.nodeBg} stroke={statusColor} strokeWidth={isFault ? 2 : 1.2}
       />
-      {/* Status bar */}
       <rect
         x={node.x} y={node.y} width={NODE_W} height={14} rx="3"
-        fill={statusColor} fillOpacity="0.2"
+        fill={statusColor} fillOpacity="0.15"
       />
-      {/* Label */}
       <text x={node.x + NODE_W / 2} y={node.y + 10} textAnchor="middle" fill={statusColor} fontSize="8" fontWeight="600">
         {node.label}
       </text>
-      {/* Icon */}
       {renderNodeIcon(node.type, node.x + 20, node.y + 34, typeColor)}
-      {/* Output value */}
       {node.output !== undefined && (
-        <text x={node.x + 58} y={node.y + 32} textAnchor="middle" fill="hsl(210, 40%, 93%)" fontSize="9" fontWeight="bold">
+        <text x={node.x + 58} y={node.y + 32} textAnchor="middle" fill={colors.fg} fontSize="9" fontWeight="bold">
           {node.output === 0 ? "OFF" : `${Math.abs(node.output)} kW`}
         </text>
       )}
-      {/* Detail */}
       {node.detail && (
-        <text x={node.x + NODE_W / 2} y={node.y + 48} textAnchor="middle" fill="hsl(215, 15%, 55%)" fontSize="7">
+        <text x={node.x + NODE_W / 2} y={node.y + 48} textAnchor="middle" fill={colors.text} fontSize="7">
           {node.detail}
         </text>
       )}
-      {/* Fault indicator */}
       {isFault && (
-        <circle cx={node.x + NODE_W - 8} cy={node.y + 8} r="4" fill="hsl(0, 62%, 50%)">
+        <circle cx={node.x + NODE_W - 8} cy={node.y + 8} r="4" fill={colors.destructive}>
           <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" />
         </circle>
       )}
@@ -221,9 +184,36 @@ function NodeBox({ node }: { node: LayoutNode }) {
 }
 
 // ─── Main component ──────────────────────────────────────────────────────────
-
 export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
   const topology = plantTopologies[plant.id];
+  const cc = useChartColors();
+
+  // Theme-aware derived colors
+  const isDark = cc.bg.includes("10%") || cc.bg.includes("7%");
+
+  const nodeBg = cc.bg;
+  const inactiveLine = cc.border;
+
+  const statusColor = (s: string) => {
+    if (s === "online") return cc.success;
+    if (s === "warning") return cc.warning;
+    return cc.destructive;
+  };
+
+  const typeColor = (t: EquipmentType) => {
+    if (t === "battery") return cc.warning;
+    if (t === "transformer" || t === "grid") return "hsl(270, 60%, 55%)";
+    if (t === "load") return cc.success;
+    return cc.primary;
+  };
+
+  const gridLabelColor = (gc: GridConnection) => {
+    if (gc === "on-grid") return cc.success;
+    if (gc === "off-grid") return cc.warning;
+    return "hsl(270, 60%, 55%)";
+  };
+
+  const colors = { ...cc, nodeBg, inactiveLine, statusColor, typeColor };
 
   const layout = useMemo(() => {
     if (!topology) return null;
@@ -238,15 +228,14 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
     );
   }
 
-  const gridInfo = GRID_LABEL[topology.gridConnection];
+  const gridColor = gridLabelColor(topology.gridConnection);
+  const gridText = topology.gridConnection === "on-grid" ? "ON-GRID" : topology.gridConnection === "off-grid" ? "OFF-GRID" : "HYBRID";
 
-  // Compute viewBox from layout
   const maxX = Math.max(...layout.nodes.map(n => n.x)) + NODE_W + 40;
   const maxY = Math.max(...layout.nodes.map(n => n.y)) + NODE_H + 60;
   const viewW = Math.max(780, maxX);
   const viewH = Math.max(360, maxY);
 
-  // Summary stats
   const totalGen = layout.nodes
     .filter(n => n.type === "inverter" && n.status !== "offline")
     .reduce((s, n) => s + (n.output ?? 0), 0);
@@ -268,32 +257,36 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
         <div className="flex items-center gap-4">
           <span
             className="text-xs font-bold px-2 py-1 rounded"
-            style={{ color: gridInfo.color, background: `${gridInfo.color}20`, border: `1px solid ${gridInfo.color}40` }}
+            style={{ color: gridColor, background: `${gridColor}20`, border: `1px solid ${gridColor}40` }}
           >
-            {gridInfo.text}
+            {gridText}
           </span>
-          <div className="flex gap-3 text-xs">
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: STATUS_COLORS.online }} /> Online</span>
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: STATUS_COLORS.warning }} /> Warning</span>
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: STATUS_COLORS.offline }} /> Offline</span>
+          <div className="flex gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: cc.success }} /> Online
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: cc.warning }} /> Warning
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: cc.destructive }} /> Offline
+            </span>
           </div>
         </div>
       </div>
 
       {/* Schematic SVG */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto" style={{ background: cc.bg }}>
         <svg
           viewBox={`0 0 ${viewW} ${viewH}`}
           className="w-full"
           style={{ minWidth: 600, maxHeight: 500 }}
         >
-          {/* Edges first (behind nodes) */}
           {layout.edges.map((edge, i) => (
-            <EdgeLine key={`edge-${i}`} edge={edge} idx={i} />
+            <EdgeLine key={`edge-${i}`} edge={edge} idx={i} colors={colors} />
           ))}
-          {/* Nodes */}
           {layout.nodes.map(node => (
-            <NodeBox key={node.id} node={node} />
+            <NodeBox key={node.id} node={node} colors={colors} />
           ))}
         </svg>
       </div>
@@ -301,9 +294,9 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
       {/* Summary bar */}
       <div className="p-3 border-t border-border flex flex-wrap gap-4 text-xs">
         <span className="text-muted-foreground font-semibold">POWER SUMMARY:</span>
-        <span style={{ color: "hsl(210, 100%, 56%)" }} className="font-bold">Generation: {totalGen} kW</span>
+        <span style={{ color: cc.primary }} className="font-bold">Generation: {totalGen} kW</span>
         {totalLoad > 0 && (
-          <span style={{ color: "hsl(142, 50%, 45%)" }} className="font-bold">
+          <span style={{ color: cc.success }} className="font-bold">
             Load: {totalLoad} kW ({totalGen > 0 ? ((totalLoad / totalGen) * 100).toFixed(0) : 0}%)
           </span>
         )}
@@ -313,7 +306,7 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
           </span>
         )}
         {batteryNode && (
-          <span style={{ color: "hsl(38, 92%, 50%)" }} className="font-bold">
+          <span style={{ color: cc.warning }} className="font-bold">
             Battery: {batteryNode.detail ?? `${batteryNode.output} kW`}
           </span>
         )}

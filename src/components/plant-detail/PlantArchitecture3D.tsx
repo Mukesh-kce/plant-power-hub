@@ -294,34 +294,23 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
 
           {/* ── POWER DISTRIBUTION SUMMARY ── */}
           <g>
-            <rect x={30} y={360} width={740} height={38} rx="6" fill="#1d2535" fillOpacity="0.5" stroke="#374151" strokeWidth="1" />
-            <text x={50} y={378} fill="#9ca3af" fontSize="10" fontWeight="600">
+            <rect x={30} y={380} width={790} height={38} rx="6" fill="#1d2535" fillOpacity="0.5" stroke="#374151" strokeWidth="1" />
+            <text x={50} y={398} fill="#9ca3af" fontSize="10" fontWeight="600">
               POWER DISTRIBUTION:
             </text>
-            <text x={200} y={378} fill="#00D4FF" fontSize="10" fontWeight="bold">
+            <text x={200} y={398} fill="#00D4FF" fontSize="10" fontWeight="bold">
               Total Gen: {totalGeneration} kW
             </text>
-            <text x={360} y={378} fill="#10b981" fontSize="10" fontWeight="bold">
+            <text x={380} y={398} fill="#10b981" fontSize="10" fontWeight="bold">
               To Load: {loadConsumption} kW ({((loadConsumption/totalGeneration)*100).toFixed(0)}%)
             </text>
-            <text x={560} y={378} fill="#a855f7" fontSize="10" fontWeight="bold">
+            <text x={580} y={398} fill="#a855f7" fontSize="10" fontWeight="bold">
               To Grid: {gridExport} kW ({((gridExport/totalGeneration)*100).toFixed(0)}%)
             </text>
-            <text x={50} y={390} fill="#6b7280" fontSize="8">
+            <text x={50} y={410} fill="#6b7280" fontSize="8">
               Green = Facility consumption • Purple = Grid export
             </text>
           </g>
-
-          {/* ── FAULT LEGEND ── */}
-          {alerts.slice(0, 3).map((alert, i) => (
-            <g key={alert.id}>
-              <rect x={560} y={345 - i * 12} width={6} height={6} rx="1"
-                fill={alert.severity === "high" ? "#ef4444" : alert.severity === "medium" ? "#f59e0b" : "#3b82f6"} />
-              <text x={572} y={350 - i * 12} fill="#9ca3af" fontSize="7">
-                {alert.message.substring(0, 40)} — {alert.slaRemaining}min
-              </text>
-            </g>
-          ))}
         </svg>
       </div>
     </Card>

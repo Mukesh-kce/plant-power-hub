@@ -95,7 +95,8 @@ export function PlantArchitecture3D({ plant }: PlantArchitectureProps) {
             { x: panelStartX + (panelsPerRow * (panelW + panelGapX)) / 2 - 20, y: 28, label: "SOLAR PANELS" },
             { x: combinerX + 22, y: 28, label: "COMBINER" },
             { x: invStartX + 30, y: 28, label: "INVERTERS" },
-            { x: gridX + 22, y: 28, label: "GRID" },
+            { x: loadX + 44, y: 28, label: "FACILITY LOAD" },
+            { x: gridX + 44, y: 28, label: "UTILITY GRID" },
           ].map(({ x, y, label }) => (
             <text key={label} x={x} y={y} textAnchor="middle" fill="#6b7280" fontSize="9" fontWeight="600" letterSpacing="1">
               {label}

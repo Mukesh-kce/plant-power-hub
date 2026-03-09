@@ -6,6 +6,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -13,7 +14,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Plant } from "@/data/mock-data";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 interface PlantDetailSidebarProps {
   plant: Plant;
@@ -35,6 +35,26 @@ export function PlantDetailSidebar({ plant }: PlantDetailSidebarProps) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+
+  const renderNavItem = (item: typeof navItems[0]) => {
+    const fullUrl = `/plants/${plant.id}${item.url}`;
+    const isActive = location.pathname === fullUrl;
+    return (
+      <SidebarMenuItem key={item.title}>
+        <SidebarMenuButton asChild isActive={isActive}>
+          <NavLink
+            to={fullUrl}
+            end
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors hover:bg-sidebar-accent"
+            activeClassName="bg-sidebar-accent text-primary font-medium"
+          >
+            <item.icon className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>{item.title}</span>}
+          </NavLink>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -77,65 +97,22 @@ export function PlantDetailSidebar({ plant }: PlantDetailSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Monitoring</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
-                const fullUrl = `/plants/${plant.id}${item.url}`;
-                const isActive = location.pathname === fullUrl;
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <NavLink
-                        to={fullUrl}
-                        end
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors hover:bg-sidebar-accent"
-                        activeClassName="bg-sidebar-accent text-primary font-medium"
-                      >
-                        <item.icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+              {navItems.map(renderNavItem)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Collapsible defaultOpen className="group/collapsible">
-          <SidebarGroup>
-            <CollapsibleTrigger asChild>
-              <div className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-sidebar-accent rounded-lg">
-                {!collapsed && <span className="text-xs font-semibold text-muted-foreground">O&M</span>}
-              </div>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {omNavItems.map((item) => {
-                    const fullUrl = `/plants/${plant.id}${item.url}`;
-                    const isActive = location.pathname === fullUrl;
-                    return (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild isActive={isActive}>
-                          <NavLink
-                            to={fullUrl}
-                            end
-                            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors hover:bg-sidebar-accent"
-                            activeClassName="bg-sidebar-accent text-primary font-medium"
-                          >
-                            <item.icon className="h-4 w-4 shrink-0" />
-                            {!collapsed && <span>{item.title}</span>}
-                          </NavLink>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+        <SidebarGroup>
+          <SidebarGroupLabel>O&M</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {omNavItems.map(renderNavItem)}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );

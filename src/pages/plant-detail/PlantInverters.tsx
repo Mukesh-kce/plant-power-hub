@@ -2,7 +2,7 @@ import { Plant, inverters } from "@/data/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { Cpu, Activity, Thermometer, AlertTriangle } from "lucide-react";
+import { HiCpuChip, HiSignal, HiFire, HiExclamationTriangle } from "react-icons/hi2";
 
 interface PlantInvertersProps {
   plant: Plant;
@@ -56,7 +56,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-success/20 flex items-center justify-center">
-                <Cpu className="h-5 w-5 text-success" />
+                <HiCpuChip className="h-5 w-5 text-success" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Online</p>
@@ -70,7 +70,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-warning/20 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5 text-warning" />
+                <HiExclamationTriangle className="h-5 w-5 text-warning" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Warning</p>
@@ -84,7 +84,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-destructive/20 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
+                <HiExclamationTriangle className="h-5 w-5 text-destructive" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Offline</p>
@@ -98,7 +98,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Activity className="h-5 w-5 text-primary" />
+                <HiSignal className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Total Output</p>
@@ -127,7 +127,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
                       <h3 className="font-semibold text-sm">{inverter.name}</h3>
                       <p className="text-xs opacity-80 mt-0.5">{inverter.statusDetail || inverter.status}</p>
                     </div>
-                    <Cpu className="h-4 w-4" />
+                    <HiCpuChip className="h-4 w-4" />
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
@@ -157,7 +157,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Activity className="h-4 w-4 text-primary" />
+                   <HiSignal className="h-4 w-4 text-primary" />
                   <p className="text-xs text-muted-foreground">DC Input</p>
                 </div>
                 <p className="text-lg font-bold text-foreground">{selectedInverterData.output * 1.03} kW</p>
@@ -165,7 +165,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Activity className="h-4 w-4 text-success" />
+                   <HiSignal className="h-4 w-4 text-success" />
                   <p className="text-xs text-muted-foreground">AC Output</p>
                 </div>
                 <p className="text-lg font-bold text-foreground">{selectedInverterData.output} kW</p>
@@ -173,7 +173,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Thermometer className="h-4 w-4 text-warning" />
+                   <HiFire className="h-4 w-4 text-warning" />
                   <p className="text-xs text-muted-foreground">Temperature</p>
                 </div>
                 <p className={`text-lg font-bold ${
@@ -189,7 +189,7 @@ export default function PlantInverters({ plant }: PlantInvertersProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Cpu className="h-4 w-4 text-primary" />
+                   <HiCpuChip className="h-4 w-4 text-primary" />
                   <p className="text-xs text-muted-foreground">Efficiency</p>
                 </div>
                 <p className="text-lg font-bold text-foreground">

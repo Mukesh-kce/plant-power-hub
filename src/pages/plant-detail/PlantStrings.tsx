@@ -2,7 +2,7 @@ import { Plant, stringData } from "@/data/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { Cable, Activity, AlertTriangle } from "lucide-react";
+import { HiSquare3Stack3D, HiSignal, HiExclamationTriangle } from "react-icons/hi2";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 interface PlantStringsProps {
@@ -49,7 +49,7 @@ export default function PlantStrings({ plant }: PlantStringsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Cable className="h-5 w-5 text-primary" />
+                <HiSquare3Stack3D className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Total Strings</p>
@@ -63,7 +63,7 @@ export default function PlantStrings({ plant }: PlantStringsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-success/20 flex items-center justify-center">
-                <Activity className="h-5 w-5 text-success" />
+                <HiSignal className="h-5 w-5 text-success" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Avg Output</p>
@@ -79,7 +79,7 @@ export default function PlantStrings({ plant }: PlantStringsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-warning/20 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5 text-warning" />
+                <HiExclamationTriangle className="h-5 w-5 text-warning" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">High Imbalance</p>

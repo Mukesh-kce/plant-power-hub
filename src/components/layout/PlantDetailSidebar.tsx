@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Cable, Cpu, Wrench, AlertTriangle } from "lucide-react";
+import { HiSquares2X2, HiArchiveBox, HiSquare3Stack3D, HiCpuChip, HiWrench, HiExclamationTriangle } from "react-icons/hi2";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -20,15 +20,15 @@ interface PlantDetailSidebarProps {
 }
 
 const navItems = [
-  { title: "Overview", url: "", icon: LayoutDashboard },
-  { title: "Panels", url: "/panels", icon: Package },
-  { title: "Strings", url: "/strings", icon: Cable },
-  { title: "Inverters", url: "/inverters", icon: Cpu },
+  { title: "Overview", url: "", icon: HiSquares2X2 },
+  { title: "Panels", url: "/panels", icon: HiArchiveBox },
+  { title: "Strings", url: "/strings", icon: HiSquare3Stack3D },
+  { title: "Inverters", url: "/inverters", icon: HiCpuChip },
 ];
 
 const omNavItems = [
-  { title: "Maintenance", url: "/maintenance", icon: Wrench },
-  { title: "Faults & SLA", url: "/faults", icon: AlertTriangle },
+  { title: "Maintenance", url: "/maintenance", icon: HiWrench },
+  { title: "Faults & SLA", url: "/faults", icon: HiExclamationTriangle },
 ];
 
 export function PlantDetailSidebar({ plant }: PlantDetailSidebarProps) {
@@ -91,7 +91,7 @@ export function PlantDetailSidebar({ plant }: PlantDetailSidebarProps) {
           </div>
         ) : (
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <Package className="h-4 w-4 text-primary-foreground" />
+            <HiArchiveBox className="h-4 w-4 text-primary-foreground" />
           </div>
         )}
       </SidebarHeader>

@@ -2,7 +2,7 @@ import { Plant } from "@/data/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { Package, TrendingUp, AlertTriangle, Activity } from "lucide-react";
+import { HiArchiveBox, HiArrowTrendingUp, HiExclamationTriangle, HiSignal } from "react-icons/hi2";
 
 interface PlantPanelsProps {
   plant: Plant;
@@ -55,7 +55,7 @@ export default function PlantPanels({ plant }: PlantPanelsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-success/20 flex items-center justify-center">
-                <Package className="h-5 w-5 text-success" />
+                <HiArchiveBox className="h-5 w-5 text-success" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Online</p>
@@ -69,7 +69,7 @@ export default function PlantPanels({ plant }: PlantPanelsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-warning/20 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5 text-warning" />
+                <HiExclamationTriangle className="h-5 w-5 text-warning" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Warning</p>
@@ -83,7 +83,7 @@ export default function PlantPanels({ plant }: PlantPanelsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-destructive/20 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
+                <HiExclamationTriangle className="h-5 w-5 text-destructive" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Offline</p>
@@ -97,7 +97,7 @@ export default function PlantPanels({ plant }: PlantPanelsProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Activity className="h-5 w-5 text-primary" />
+                <HiSignal className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Avg Output</p>

@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { useTheme } from "@/hooks/use-theme";
-import { User, Bell, Monitor, Shield, Zap, Save, Sun, Moon, Laptop } from "lucide-react";
+import { HiUser, HiBell, HiComputerDesktop, HiShieldCheck, HiBolt, HiCheck, HiSun, HiMoon, HiDeviceTablet } from "react-icons/hi2";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -55,9 +55,9 @@ export default function SettingsPage() {
   };
 
   const themeOptions = [
-    { value: "light" as const, label: "Light", icon: Sun, desc: "Clean light interface" },
-    { value: "dark" as const, label: "Dark", icon: Moon, desc: "Easy on the eyes" },
-    { value: "system" as const, label: "System", icon: Laptop, desc: "Follow OS preference" },
+    { value: "light" as const, label: "Light", icon: HiSun, desc: "Clean light interface" },
+    { value: "dark" as const, label: "Dark", icon: HiMoon, desc: "Easy on the eyes" },
+    { value: "system" as const, label: "System", icon: HiDeviceTablet, desc: "Follow OS preference" },
   ];
 
   return (
@@ -67,10 +67,10 @@ export default function SettingsPage() {
 
         <Tabs defaultValue="display" className="w-full">
           <TabsList className="bg-secondary/50 border border-border">
-            <TabsTrigger value="profile" className="text-xs gap-1.5"><User className="h-3.5 w-3.5" /> Profile</TabsTrigger>
-            <TabsTrigger value="notifications" className="text-xs gap-1.5"><Bell className="h-3.5 w-3.5" /> Notifications</TabsTrigger>
-            <TabsTrigger value="display" className="text-xs gap-1.5"><Monitor className="h-3.5 w-3.5" /> Display</TabsTrigger>
-            <TabsTrigger value="system" className="text-xs gap-1.5"><Zap className="h-3.5 w-3.5" /> System</TabsTrigger>
+            <TabsTrigger value="profile" className="text-xs gap-1.5"><HiUser className="h-3.5 w-3.5" /> Profile</TabsTrigger>
+            <TabsTrigger value="notifications" className="text-xs gap-1.5"><HiBell className="h-3.5 w-3.5" /> Notifications</TabsTrigger>
+            <TabsTrigger value="display" className="text-xs gap-1.5"><HiComputerDesktop className="h-3.5 w-3.5" /> Display</TabsTrigger>
+            <TabsTrigger value="system" className="text-xs gap-1.5"><HiBolt className="h-3.5 w-3.5" /> System</TabsTrigger>
           </TabsList>
 
           {/* Profile */}
@@ -107,7 +107,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <Button size="sm" onClick={() => handleSave("Profile")}>
-                  <Save className="h-3.5 w-3.5 mr-1" /> Save Profile
+                  <HiCheck className="h-3.5 w-3.5 mr-1" /> Save Profile
                 </Button>
               </CardContent>
             </Card>
@@ -140,7 +140,7 @@ export default function SettingsPage() {
                   </div>
                 ))}
                 <Button size="sm" onClick={() => handleSave("Notification")}>
-                  <Save className="h-3.5 w-3.5 mr-1" /> Save Preferences
+                  <HiCheck className="h-3.5 w-3.5 mr-1" /> Save Preferences
                 </Button>
               </CardContent>
             </Card>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                   <Switch checked={display.compactMode} onCheckedChange={(c) => setDisplay({ ...display, compactMode: c })} />
                 </div>
                 <Button size="sm" onClick={() => handleSave("Display")}>
-                  <Save className="h-3.5 w-3.5 mr-1" /> Save Display Settings
+                  <HiCheck className="h-3.5 w-3.5 mr-1" /> Save Display Settings
                 </Button>
               </CardContent>
             </Card>
@@ -281,7 +281,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <Button size="sm" onClick={() => handleSave("System")}>
-                  <Save className="h-3.5 w-3.5 mr-1" /> Save System Settings
+                  <HiCheck className="h-3.5 w-3.5 mr-1" /> Save System Settings
                 </Button>
               </CardContent>
             </Card>

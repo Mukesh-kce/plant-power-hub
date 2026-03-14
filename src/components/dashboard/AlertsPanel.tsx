@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { alerts } from "@/data/mock-data";
-import { Clock, ChevronRight } from "lucide-react";
+import { HiClock, HiChevronRight } from "react-icons/hi2";
 
 const severityStyles = {
   high: "bg-destructive/15 text-destructive border-destructive/30",
@@ -39,11 +39,11 @@ export function AlertsPanel() {
             <p className="text-xs font-medium text-foreground mb-2">{alert.message}</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                <Clock className="h-3 w-3" />
+                <HiClock className="h-3 w-3" />
                 <span>SLA: {alert.slaRemaining}m remaining</span>
               </div>
               <Button variant="ghost" size="sm" className="h-6 text-[10px] text-primary px-2">
-                Action <ChevronRight className="h-3 w-3 ml-0.5" />
+                Action <HiChevronRight className="h-3 w-3 ml-0.5" />
               </Button>
             </div>
           </div>

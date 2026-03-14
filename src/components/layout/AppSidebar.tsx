@@ -1,15 +1,15 @@
 import {
-  LayoutDashboard,
-  Factory,
-  BarChart3,
-  IndianRupee,
-  Zap,
-  AlertTriangle,
-  Wrench,
-  FileText,
-  Settings,
-  Shield,
-} from "lucide-react";
+  HiSquares2X2,
+  HiHomeModern,
+  HiChartBar,
+  HiCurrencyDollar,
+  HiBolt,
+  HiExclamationTriangle,
+  HiWrench,
+  HiDocumentText,
+  HiCog6Tooth,
+  HiShieldCheck,
+} from "react-icons/hi2";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -25,16 +25,16 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Plants", url: "/plants", icon: Factory },
-  { title: "Performance", url: "/performance", icon: BarChart3 },
-  { title: "Financial", url: "/financial", icon: IndianRupee },
-  { title: "Energy", url: "/energy", icon: Zap },
-  { title: "Alerts", url: "/alerts", icon: AlertTriangle },
-  { title: "O&M / SLA", url: "/maintenance", icon: Wrench },
-  { title: "Reports", url: "/reports", icon: FileText },
-  { title: "Settings", url: "/settings", icon: Settings },
-  { title: "Admin", url: "/admin", icon: Shield },
+  { title: "Dashboard", url: "/", icon: HiSquares2X2 },
+  { title: "Plants", url: "/plants", icon: HiHomeModern },
+  { title: "Performance", url: "/performance", icon: HiChartBar },
+  { title: "Financial", url: "/financial", icon: HiCurrencyDollar },
+  { title: "Energy", url: "/energy", icon: HiBolt },
+  { title: "Alerts", url: "/alerts", icon: HiExclamationTriangle },
+  { title: "O&M / SLA", url: "/maintenance", icon: HiWrench },
+  { title: "Reports", url: "/reports", icon: HiDocumentText },
+  { title: "Settings", url: "/settings", icon: HiCog6Tooth },
+  { title: "Admin", url: "/admin", icon: HiShieldCheck },
 ];
 
 export function AppSidebar() {
@@ -46,12 +46,9 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <Zap className="h-4 w-4 text-primary-foreground" />
-          </div>
           {!collapsed && (
             <span className="text-lg font-bold text-foreground tracking-tight">
-              SolarWatch
+              The Voltaura
             </span>
           )}
         </div>

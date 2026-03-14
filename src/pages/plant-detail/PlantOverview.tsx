@@ -6,7 +6,7 @@ import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { PlantArchitecture3D } from "@/components/plant-detail/PlantArchitecture3D";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { Zap, Gauge, TrendingUp, Sun, Thermometer, Wind, Droplets, Activity } from "lucide-react";
+import { HiBolt, HiChartBar, HiArrowTrendingUp, HiSun, HiFire, HiCloud, HiBeaker, HiSignal } from "react-icons/hi2";
 
 interface PlantOverviewProps {
   plant: Plant;
@@ -72,7 +72,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">Performance Ratio</span>
-              <TrendingUp className="h-4 w-4 text-primary" />
+              <HiArrowTrendingUp className="h-4 w-4 text-primary" />
             </div>
             <div className="text-2xl font-bold text-foreground">{performanceMetrics.pr}%</div>
             <div className="text-xs text-success mt-1">+2.1% from target</div>
@@ -83,7 +83,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">Capacity Utilization</span>
-              <Gauge className="h-4 w-4 text-primary" />
+              <HiChartBar className="h-4 w-4 text-primary" />
             </div>
             <div className="text-2xl font-bold text-foreground">{performanceMetrics.cuf}%</div>
             <div className="text-xs text-muted-foreground mt-1">Annual average</div>
@@ -94,7 +94,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">Specific Yield</span>
-              <Activity className="h-4 w-4 text-primary" />
+              <HiSignal className="h-4 w-4 text-primary" />
             </div>
             <div className="text-2xl font-bold text-foreground">{performanceMetrics.specificYield}</div>
             <div className="text-xs text-muted-foreground mt-1">kWh/kWp/day</div>
@@ -105,7 +105,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">DC/AC Ratio</span>
-              <Zap className="h-4 w-4 text-primary" />
+              <HiBolt className="h-4 w-4 text-primary" />
             </div>
             <div className="text-2xl font-bold text-foreground">{performanceMetrics.dcAcRatio}</div>
             <div className="text-xs text-success mt-1">Optimal range</div>
@@ -118,7 +118,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
         <Card className="border-border">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <Zap className="h-4 w-4" />
+              <HiBolt className="h-4 w-4" />
               Power Factor Trend (24h)
             </CardTitle>
           </CardHeader>
@@ -155,7 +155,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
         <Card className="border-border">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <Activity className="h-4 w-4" />
+              <HiSignal className="h-4 w-4" />
               Grid Connection Metrics
             </CardTitle>
           </CardHeader>
@@ -188,7 +188,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
       <Card className="border-border">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <Sun className="h-4 w-4" />
+            <HiSun className="h-4 w-4" />
             Environmental Conditions
           </CardTitle>
         </CardHeader>
@@ -213,28 +213,28 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           </ResponsiveContainer>
           <div className="grid grid-cols-4 gap-2 mt-3 text-xs">
             <div className="bg-muted/30 p-2 rounded flex items-center gap-2">
-              <Sun className="h-4 w-4 text-primary" />
+              <HiSun className="h-4 w-4 text-primary" />
               <div>
                 <div className="text-muted-foreground">Current Irr.</div>
                 <div className="font-semibold">{environmentalData[environmentalData.length - 1].irradiance} W/m²</div>
               </div>
             </div>
             <div className="bg-muted/30 p-2 rounded flex items-center gap-2">
-              <Thermometer className="h-4 w-4 text-warning" />
+              <HiFire className="h-4 w-4 text-warning" />
               <div>
                 <div className="text-muted-foreground">Amb. Temp</div>
                 <div className="font-semibold">{environmentalData[environmentalData.length - 1].temp}°C</div>
               </div>
             </div>
             <div className="bg-muted/30 p-2 rounded flex items-center gap-2">
-              <Droplets className="h-4 w-4 text-blue-400" />
+              <HiBeaker className="h-4 w-4 text-blue-400" />
               <div>
                 <div className="text-muted-foreground">Humidity</div>
                 <div className="font-semibold">{environmentalData[environmentalData.length - 1].humidity}%</div>
               </div>
             </div>
             <div className="bg-muted/30 p-2 rounded flex items-center gap-2">
-              <Wind className="h-4 w-4 text-muted-foreground" />
+              <HiCloud className="h-4 w-4 text-muted-foreground" />
               <div>
                 <div className="text-muted-foreground">Wind Speed</div>
                 <div className="font-semibold">12 km/h</div>
@@ -270,7 +270,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">Soiling Loss</span>
-              <Droplets className="h-4 w-4 text-warning" />
+              <HiBeaker className="h-4 w-4 text-warning" />
             </div>
             <div className="text-2xl font-bold text-warning">{performanceMetrics.soiling}%</div>
             <div className="text-xs text-muted-foreground mt-1">Cleaning recommended</div>
@@ -281,7 +281,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">Annual Degradation</span>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <HiArrowTrendingUp className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="text-2xl font-bold text-foreground">{performanceMetrics.degradation}%</div>
             <div className="text-xs text-success mt-1">Within warranty limits</div>
@@ -292,7 +292,7 @@ export default function PlantOverview({ plant }: PlantOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-muted-foreground">Module Temp</span>
-              <Thermometer className="h-4 w-4 text-warning" />
+              <HiFire className="h-4 w-4 text-warning" />
             </div>
             <div className="text-2xl font-bold text-foreground">52°C</div>
             <div className="text-xs text-warning mt-1">+14°C above ambient</div>

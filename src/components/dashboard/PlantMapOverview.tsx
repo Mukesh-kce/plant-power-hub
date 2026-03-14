@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { plants } from "@/data/mock-data";
-import { MapPin } from "lucide-react";
+import { HiMapPin } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 
 const getHealthBg = (score: number) => {
@@ -30,7 +30,7 @@ export function PlantMapOverview() {
             <div className="flex-1 min-w-0">
               <div className="text-xs font-medium text-foreground truncate">{plant.name}</div>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                <MapPin className="h-2.5 w-2.5" />
+                <HiMapPin className="h-2.5 w-2.5" />
                 {plant.location}
               </div>
             </div>

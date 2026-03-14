@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { plants } from "@/data/mock-data";
-import { MapPin } from "lucide-react";
+import { HiMapPin } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 
 const getHealthColor = (s: number) => s >= 85 ? "text-success" : s >= 70 ? "text-warning" : "text-destructive";
@@ -25,7 +25,7 @@ export default function Plants() {
                   <div>
                     <h3 className="text-base font-semibold text-foreground">{p.name}</h3>
                     <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                      <MapPin className="h-3 w-3" /> {p.location}
+                      <HiMapPin className="h-3 w-3" /> {p.location}
                     </p>
                   </div>
                   <div className={`text-2xl font-bold ${getHealthColor(p.healthScore)}`}>

@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Battery, Sun, Gauge, Zap } from "lucide-react";
+import { HiBattery50, HiSun, HiChartBar, HiBolt } from "react-icons/hi2";
 
 const stats = [
-  { label: "Active Power", value: "4.58 MW", icon: Zap, color: "text-primary" },
-  { label: "PR Today", value: "78.4%", icon: Gauge, color: "text-success" },
-  { label: "Peak Irradiance", value: "950 W/m²", icon: Sun, color: "text-warning" },
-  { label: "Grid Export", value: "32.4 MWh", icon: Battery, color: "text-primary" },
+  { label: "Active Power", value: "4.58 MW", icon: HiBolt, color: "text-primary" },
+  { label: "PR Today", value: "78.4%", icon: HiChartBar, color: "text-success" },
+  { label: "Peak Irradiance", value: "950 W/m²", icon: HiSun, color: "text-warning" },
+  { label: "Grid Export", value: "32.4 MWh", icon: HiBattery50, color: "text-primary" },
 ];
 
 export function QuickStats() {

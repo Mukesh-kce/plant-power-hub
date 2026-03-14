@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { kpiData, formatINR, formatNumber } from "@/data/mock-data";
-import { Heart, IndianRupee, Zap, Clock, TrendingDown, TrendingUp } from "lucide-react";
+import { HiHeart, HiCurrencyDollar, HiBolt, HiClock, HiArrowTrendingDown, HiArrowTrendingUp } from "react-icons/hi2";
 
 const getHealthColor = (score: number) => {
   if (score >= 85) return "text-success";
@@ -14,7 +14,7 @@ export function KPICards() {
       label: "Plant Health Score",
       value: kpiData.healthScore,
       suffix: "/ 100",
-      icon: Heart,
+      icon: HiHeart,
       color: getHealthColor(kpiData.healthScore),
       trend: null,
     },
@@ -22,7 +22,7 @@ export function KPICards() {
       label: "Revenue Impact (MTD)",
       value: formatINR(kpiData.revenueLostMTD),
       subtitle: `Recovered: ${formatINR(kpiData.revenueRecoveredMTD)}`,
-      icon: IndianRupee,
+      icon: HiCurrencyDollar,
       color: "text-destructive",
       trend: kpiData.revenueDeviationPct,
     },
@@ -30,7 +30,7 @@ export function KPICards() {
       label: "Expected vs Actual",
       value: `${formatNumber(kpiData.actualKWh)} kWh`,
       subtitle: `Expected: ${formatNumber(kpiData.expectedKWh)} kWh`,
-      icon: Zap,
+      icon: HiBolt,
       color: "text-primary",
       trend: kpiData.deviationPct,
     },
@@ -38,7 +38,7 @@ export function KPICards() {
       label: "Availability",
       value: `${kpiData.availabilityPct}%`,
       subtitle: `Downtime: ${kpiData.downtimeHours}h`,
-      icon: Clock,
+      icon: HiClock,
       color: "text-success",
       trend: null,
     },
@@ -64,7 +64,7 @@ export function KPICards() {
               )}
               {card.trend !== null && (
                 <span className={`flex items-center text-xs font-medium ${card.trend < 0 ? "text-destructive" : "text-success"}`}>
-                  {card.trend < 0 ? <TrendingDown className="h-3 w-3 mr-0.5" /> : <TrendingUp className="h-3 w-3 mr-0.5" />}
+                  {card.trend < 0 ? <HiArrowTrendingDown className="h-3 w-3 mr-0.5" /> : <HiArrowTrendingUp className="h-3 w-3 mr-0.5" />}
                   {Math.abs(card.trend)}%
                 </span>
               )}

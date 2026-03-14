@@ -5,7 +5,7 @@ import { TopBar } from "@/components/layout/TopBar";
 import { plants } from "@/data/mock-data";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { HiArrowLeft } from "react-icons/hi2";
 import PlantOverview from "./plant-detail/PlantOverview";
 import PlantPanels from "./plant-detail/PlantPanels";
 import PlantStrings from "./plant-detail/PlantStrings";
@@ -41,7 +41,7 @@ export default function PlantDetail() {
               onClick={() => navigate("/plants")}
               className="mb-4 -mt-2"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <HiArrowLeft className="h-4 w-4 mr-2" />
               Back to Plants
             </Button>
             <Routes>

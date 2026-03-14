@@ -2,7 +2,7 @@ import { Plant, maintenanceVisits } from "@/data/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, User, Wrench, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { HiCalendar, HiUser, HiWrench, HiCheckCircle, HiClock, HiExclamationTriangle } from "react-icons/hi2";
 
 interface PlantMaintenanceProps {
   plant: Plant;
@@ -21,9 +21,9 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
 
   const getTypeIcon = (type: string) => {
     return type === "preventive" ? (
-      <Calendar className="h-4 w-4 text-primary" />
+      <HiCalendar className="h-4 w-4 text-primary" />
     ) : (
-      <Wrench className="h-4 w-4 text-warning" />
+      <HiWrench className="h-4 w-4 text-warning" />
     );
   };
 
@@ -45,7 +45,7 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
                 <p className="text-xs text-muted-foreground">Completed MTD</p>
                 <p className="text-2xl font-bold text-foreground">12</p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-success" />
+              <HiCheckCircle className="h-8 w-8 text-success" />
             </div>
           </CardContent>
         </Card>
@@ -57,7 +57,7 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
                 <p className="text-xs text-muted-foreground">Scheduled</p>
                 <p className="text-2xl font-bold text-foreground">3</p>
               </div>
-              <Clock className="h-8 w-8 text-primary" />
+              <HiClock className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -69,7 +69,7 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
                 <p className="text-xs text-muted-foreground">Overdue</p>
                 <p className="text-2xl font-bold text-destructive">1</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-destructive" />
+              <HiExclamationTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -81,7 +81,7 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
                 <p className="text-xs text-muted-foreground">Next Visit</p>
                 <p className="text-sm font-semibold text-foreground">Mar 5, 2024</p>
               </div>
-              <Calendar className="h-8 w-8 text-muted-foreground" />
+              <HiCalendar className="h-8 w-8 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -110,7 +110,7 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
                 </div>
                 <div className="text-right text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
+                     <HiCalendar className="h-3 w-3" />
                     {visit.date}
                   </div>
                 </div>
@@ -119,7 +119,7 @@ export default function PlantMaintenance({ plant }: PlantMaintenanceProps) {
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <User className="h-3 w-3 text-muted-foreground" />
+                     <HiUser className="h-3 w-3 text-muted-foreground" />
                     <span className="text-foreground">{visit.technician}</span>
                   </div>
                   <span className="text-muted-foreground">Checklist: {visit.checklist}%</span>

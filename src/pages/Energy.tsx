@@ -2,7 +2,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { energyData } from "@/data/mock-data";
-import { Lightbulb } from "lucide-react";
+import { HiLightBulb } from "react-icons/hi2";
 import { useChartColors, useTooltipStyle } from "@/hooks/use-chart-colors";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -88,7 +88,7 @@ export default function Energy() {
             <CardContent className="space-y-3">
               {energyData.recommendations.map((rec, i) => (
                 <div key={i} className="flex gap-3 items-start p-3 rounded-lg bg-secondary/30 border border-border">
-                  <Lightbulb className="h-4 w-4 text-warning shrink-0 mt-0.5" />
+                  <HiLightBulb className="h-4 w-4 text-warning shrink-0 mt-0.5" />
                   <p className="text-xs text-foreground leading-relaxed">{rec}</p>
                 </div>
               ))}

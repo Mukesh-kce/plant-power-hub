@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { alerts as initialAlerts, Alert } from "@/data/mock-data";
-import { Clock, ChevronRight, CheckCircle, Send, AlertTriangle, Info } from "lucide-react";
+import { HiClock, HiChevronRight, HiCheckCircle, HiPaperAirplane, HiExclamationTriangle, HiInformationCircle } from "react-icons/hi2";
 import { toast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -84,7 +84,7 @@ export default function Alerts() {
                     <div className="flex items-center gap-3 mt-1">
                       <span className="text-[10px] text-muted-foreground">Detected: {alert.detectedAt}</span>
                       <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> SLA: {alert.slaRemaining}m
+                        <HiClock className="h-3 w-3" /> SLA: {alert.slaRemaining}m
                       </span>
                     </div>
                   </div>
@@ -95,11 +95,11 @@ export default function Alerts() {
                       className="text-primary text-xs shrink-0"
                       onClick={() => handleResolveClick(alert)}
                     >
-                      Resolve <ChevronRight className="h-3 w-3 ml-0.5" />
+                      Resolve <HiChevronRight className="h-3 w-3 ml-0.5" />
                     </Button>
                   ) : (
                     <Badge className={`text-[10px] border shrink-0 ${statusStyles["under-review"]}`}>
-                      <Info className="h-3 w-3 mr-1" /> Under Review
+                      <HiInformationCircle className="h-3 w-3 mr-1" /> Under Review
                     </Badge>
                   )}
                 </CardContent>
@@ -113,7 +113,7 @@ export default function Alerts() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <HiExclamationTriangle className="h-5 w-5 text-destructive" />
               Resolve Alert
             </DialogTitle>
             <DialogDescription>Review the issue details and forward to the maintenance team.</DialogDescription>
@@ -132,7 +132,7 @@ export default function Alerts() {
                 <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
                   <span>Detected: {selectedAlert.detectedAt}</span>
                   <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" /> SLA: {selectedAlert.slaRemaining}m remaining
+                    <HiClock className="h-3 w-3" /> SLA: {selectedAlert.slaRemaining}m remaining
                   </span>
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default function Alerts() {
               Cancel
             </Button>
             <Button onClick={handleForward}>
-              <Send className="h-4 w-4 mr-1" /> Forward for Review
+              <HiPaperAirplane className="h-4 w-4 mr-1" /> Forward for Review
             </Button>
           </DialogFooter>
         </DialogContent>

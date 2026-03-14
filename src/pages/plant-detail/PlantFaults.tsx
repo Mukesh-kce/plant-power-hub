@@ -1,7 +1,7 @@
 import { Plant, faults } from "@/data/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Clock, User, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { HiExclamationTriangle, HiClock, HiUser, HiCheckCircle, HiXCircle, HiArrowPath } from "react-icons/hi2";
 
 interface PlantFaultsProps {
   plant: Plant;
@@ -13,17 +13,17 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
       critical: { 
         label: "Critical", 
         className: "bg-destructive/20 text-destructive border-destructive/30",
-        icon: XCircle
+        icon: HiXCircle
       },
       major: { 
         label: "Major", 
         className: "bg-warning/20 text-warning border-warning/30",
-        icon: AlertTriangle
+        icon: HiExclamationTriangle
       },
       minor: { 
         label: "Minor", 
         className: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-        icon: AlertTriangle
+        icon: HiExclamationTriangle
       },
     };
     const config = variants[severity] || variants.minor;
@@ -41,17 +41,17 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
       open: { 
         label: "Open", 
         className: "bg-destructive/20 text-destructive border-destructive/30",
-        icon: XCircle
+        icon: HiXCircle
       },
       "in-progress": { 
         label: "In Progress", 
         className: "bg-warning/20 text-warning border-warning/30",
-        icon: Loader2
+        icon: HiArrowPath
       },
       resolved: { 
         label: "Resolved", 
         className: "bg-success/20 text-success border-success/30",
-        icon: CheckCircle2
+        icon: HiCheckCircle
       },
     };
     const config = variants[status] || variants.open;
@@ -85,7 +85,7 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
                 <p className="text-xs text-muted-foreground">Open Faults</p>
                 <p className="text-2xl font-bold text-destructive">{openFaults.length}</p>
               </div>
-              <XCircle className="h-8 w-8 text-destructive" />
+              <HiXCircle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -99,7 +99,7 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
                   {faults.filter(f => f.severity === "critical" && f.status !== "resolved").length}
                 </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-destructive" />
+              <HiExclamationTriangle className="h-8 w-8 text-destructive" />
             </div>
           </CardContent>
         </Card>
@@ -111,7 +111,7 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
                 <p className="text-xs text-muted-foreground">Resolved MTD</p>
                 <p className="text-2xl font-bold text-success">18</p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-success" />
+              <HiCheckCircle className="h-8 w-8 text-success" />
             </div>
           </CardContent>
         </Card>
@@ -123,7 +123,7 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
                 <p className="text-xs text-muted-foreground">Avg. Resolution</p>
                 <p className="text-xl font-bold text-foreground">2.4h</p>
               </div>
-              <Clock className="h-8 w-8 text-primary" />
+              <HiClock className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -150,7 +150,7 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
                   <div className="text-right">
                     <div className="text-xs text-muted-foreground mb-1">SLA Remaining</div>
                     <div className="text-lg font-bold text-destructive flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
+                      <HiClock className="h-4 w-4" />
                       {fault.slaCountdown}
                     </div>
                   </div>
@@ -160,11 +160,11 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                    <HiClock className="h-3 w-3" />
                     Detected: {fault.detectedAt}
                   </div>
                   <div className="flex items-center gap-1">
-                    <User className="h-3 w-3" />
+                    <HiUser className="h-3 w-3" />
                     Assigned: {fault.assignee}
                   </div>
                 </div>
@@ -196,11 +196,11 @@ export default function PlantFaults({ plant }: PlantFaultsProps) {
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                    <HiClock className="h-3 w-3" />
                     Detected: {fault.detectedAt}
                   </div>
                   <div className="flex items-center gap-1">
-                    <User className="h-3 w-3" />
+                    <HiUser className="h-3 w-3" />
                     Resolved by: {fault.assignee}
                   </div>
                 </div>

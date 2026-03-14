@@ -13,8 +13,8 @@ import { Label } from "@/components/ui/label";
 import { plants, formatINR } from "@/data/mock-data";
 import { toast } from "@/hooks/use-toast";
 import {
-  Users, Activity, Shield, Settings, Search, Plus, Edit, Trash2, CheckCircle, XCircle, Clock,
-} from "lucide-react";
+  HiUsers, HiSignal, HiShieldCheck, HiCog6Tooth, HiMagnifyingGlass, HiPlus, HiPencilSquare, HiTrash, HiCheckCircle, HiXCircle, HiClock,
+} from "react-icons/hi2";
 
 const getHealthColor = (s: number) => s >= 85 ? "text-success" : s >= 70 ? "text-warning" : "text-destructive";
 const getHealthBg = (s: number) => s >= 85 ? "bg-success/15" : s >= 70 ? "bg-warning/15" : "bg-destructive/15";
@@ -105,17 +105,17 @@ export default function Admin() {
 
         <Tabs defaultValue="users" className="w-full">
           <TabsList className="bg-secondary/50 border border-border">
-            <TabsTrigger value="users" className="text-xs gap-1.5"><Users className="h-3.5 w-3.5" /> Users</TabsTrigger>
-            <TabsTrigger value="portfolio" className="text-xs gap-1.5"><Activity className="h-3.5 w-3.5" /> Portfolio</TabsTrigger>
-            <TabsTrigger value="audit" className="text-xs gap-1.5"><Shield className="h-3.5 w-3.5" /> Audit Log</TabsTrigger>
-            <TabsTrigger value="system" className="text-xs gap-1.5"><Settings className="h-3.5 w-3.5" /> System</TabsTrigger>
+            <TabsTrigger value="users" className="text-xs gap-1.5"><HiUsers className="h-3.5 w-3.5" /> Users</TabsTrigger>
+            <TabsTrigger value="portfolio" className="text-xs gap-1.5"><HiSignal className="h-3.5 w-3.5" /> Portfolio</TabsTrigger>
+            <TabsTrigger value="audit" className="text-xs gap-1.5"><HiShieldCheck className="h-3.5 w-3.5" /> Audit Log</TabsTrigger>
+            <TabsTrigger value="system" className="text-xs gap-1.5"><HiCog6Tooth className="h-3.5 w-3.5" /> System</TabsTrigger>
           </TabsList>
 
           {/* Users */}
           <TabsContent value="users" className="mt-4 space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <HiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input placeholder="Search users..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 text-sm" />
               </div>
               <Select value={roleFilter} onValueChange={setRoleFilter}>
@@ -129,7 +129,7 @@ export default function Admin() {
                 </SelectContent>
               </Select>
               <Button size="sm" onClick={() => setAddUserOpen(true)}>
-                <Plus className="h-3.5 w-3.5 mr-1" /> Add User
+                <HiPlus className="h-3.5 w-3.5 mr-1" /> Add User
               </Button>
             </div>
 
@@ -160,9 +160,9 @@ export default function Admin() {
                         <TableCell>
                           <div className="flex items-center gap-1.5">
                             {u.status === "active" ? (
-                              <CheckCircle className="h-3.5 w-3.5 text-success" />
+                               <HiCheckCircle className="h-3.5 w-3.5 text-success" />
                             ) : (
-                              <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                               <HiXCircle className="h-3.5 w-3.5 text-muted-foreground" />
                             )}
                             <span className="text-xs">{u.status}</span>
                           </div>
@@ -171,10 +171,10 @@ export default function Admin() {
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
                             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toggleUserStatus(u.id)}>
-                              <Edit className="h-3.5 w-3.5" />
+                               <HiPencilSquare className="h-3.5 w-3.5" />
                             </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteUser(u.id, u.name)}>
-                              <Trash2 className="h-3.5 w-3.5" />
+                               <HiTrash className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                         </TableCell>
@@ -252,7 +252,7 @@ export default function Admin() {
                   {auditLogs.map((log, i) => (
                     <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30 border border-border">
                       <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
-                        <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                        <HiClock className="h-3.5 w-3.5 text-muted-foreground" />
                         <span className="text-xs font-mono text-muted-foreground">{log.time}</span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -372,7 +372,7 @@ export default function Admin() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddUserOpen(false)}>Cancel</Button>
-            <Button onClick={handleAddUser}><Plus className="h-4 w-4 mr-1" /> Add User</Button>
+            <Button onClick={handleAddUser}><HiPlus className="h-4 w-4 mr-1" /> Add User</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
